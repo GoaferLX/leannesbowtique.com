@@ -3,12 +3,13 @@ package views
 import (
 	"bytes"
 	"errors"
-	"goafweb/models"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"leannesbowtique.com/models"
 
 	"github.com/gorilla/csrf"
 )

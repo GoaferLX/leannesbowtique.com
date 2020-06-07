@@ -1,9 +1,10 @@
 package views
 
 import (
-	"goafweb/models"
 	"net/http"
 	"time"
+
+	"leannesbowtique.com/models"
 )
 
 // Data structure to be passed to all views
