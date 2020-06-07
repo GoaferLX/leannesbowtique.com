@@ -1,0 +1,35 @@
+{{define "content"}}
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-round w3-container w3-theme">
+    <h3>Questions?</h3>
+  </header>
+  <div class="w3-panel">
+  <p>If you have any questions please reach out to us through one of the many channels available!</p>
+  <p>You can find us on all the major social media platforms, or send us an email using the form on this page!</p>
+</div>
+</section>
+
+<section class="w3-card-4 w3-round w3-section w3-white">
+  <header class="w3-round w3-container w3-theme">
+    <h3>Contact Us</h3>
+  </header>
+  <div class="w3-panel">
+    {{template "contactform"}}
+  </div>
+</section>
+{{end}}
+
+
+{{define "contactform"}}
+<form class="w3-panel" method="POST" action="/contact">
+  {{csrfField}}
+  <label for="email" class="w3-text-theme"><b>Your Email address:</b></label>
+  <input name="email" id="email" class="w3-input" type="email" placeholder="So we can answer you..." required="required"><br />
+  <label for="subject" class="w3-text-theme"><b>Subject:</b></label>
+  <input name="subject" id="subject" class="w3-input" type="text" placeholder="Why are you messaging?" required="required"><br />
+  <label for="message" class="w3-text-theme"><b>Message:</b></label>
+  <textarea name="message" id="message" class="w3-input" placeholder="What you like to share with us?" rows="5" style="resize:none" required="required">
+  </textarea><br />
+  <button class="w3-button w3-theme" type="submit"><i class="fas fa-pencil-alt w3-margin-right" ></i>Send!</button>
+</form>
+{{end}}

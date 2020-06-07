@@ -1,0 +1,22 @@
+{{define "content"}}
+<div class="w3-section w3-white w3-card-4 w3-round" >
+  <header class="w3-container w3-theme w3-round">
+    <h3>Forgot Your Password?</h3>
+  </header>
+  <div class="w3-container">
+    {{template "forgotPWForm" .}}
+  </div>
+</div>
+{{end}}
+
+{{define "forgotPWForm"}}
+<form name="forgotPW" class="w3-panel" action="/forgot" method="POST">
+  {{csrfField}}
+  <label for="email" class="w3-text-theme"><b>Email address</b></label>
+  <input name="email" id="email" class="w3-input" type="email" value="{{.Email}}" placeholder="Email" />
+
+  <input class="w3-button w3-theme-action" type="submit" value="Submit" />
+
+  <p class="w3-small"><a href="/login">Remember your password?</a></p>
+</form>
+{{end}}

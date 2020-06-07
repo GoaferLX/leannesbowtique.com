@@ -1,0 +1,32 @@
+{{define "content" }}
+<section class="w3-section w3-round w3-card-4 w3-white">
+      <h3 class="">Add Product</h3>
+      <div class="">
+        {{template "newProductForm" .}}
+      </div>
+    </section>
+{{end}}
+
+{{define "newProductForm"}}
+<form class="w3-panel" action="/product/new" method="POST">
+  {{csrfField}}
+  <label for="name" id="name" class="w3-text-theme">Name:</label>
+  <input name="name" class="w3-input" type="text" placeholder="Whats it called?" value="{{.Product.Name}}" />
+
+  <label for="description" class="w3-text-theme">Description:</label>
+  <textarea name="description" id="description" class="w3-input" placeholder="A short description about the product...">
+    {{.Product.Description}}
+  </textarea>
+
+  <label for="price" class="w3-text-theme">Price:</label>
+  <input name="price" id="price" class="w3-input" type="text" placeholder="What does it cost?" value="{{printf "%.2f" .Product.Price}}" />
+
+  <label for="category" class="w3-text-theme">Category:</label><br />
+  {{range .Categories}}
+    <input name="categories.{{.ID}}.ID" id="categories.{{.ID}}.ID" class="w3-check"  value="{{.ID}}" type="checkbox">
+    <label>{{.Name}}</label>
+  {{end}}
+  <br />
+  <input class="w3-button w3-theme-action" type="submit" value="Add!" />
+</form>
+{{end}}

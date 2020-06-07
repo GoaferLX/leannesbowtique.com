@@ -1,0 +1,22 @@
+{{define "content"}}
+<div class="w3-section w3-white w3-card-4 w3-white">
+  <header class="w3-container w3-theme w3-round">
+    <h3>Reset Your Password</h3>
+  </header>
+  {{template "resetPWForm" .}}
+  <p><a href="/forgot">Need to request a new token?</a></p>
+</div>
+{{end}}
+
+{{define "resetPWForm"}}
+<form name="resetPW" class="w3-panel" action="/reset" method="POST">
+  {{csrfField}}
+  <label for="token" class="w3-text-theme"><b>Reset Token</b></label>
+  <input name="token" id="token" class="w3-input" type="text" value="{{.Token}}" placeholder="You will receive this via email" />
+
+  <label for="password" class="w3-text-theme"><b>Password</b></label>
+  <input name="password" id="password" class="w3-input" type="password" placeholder="New Password: Keep it secret. Keep it safe." />
+
+  <input class="w3-button w3-theme-action" type="submit" value="Reset!" />
+</form>
+{{end}}

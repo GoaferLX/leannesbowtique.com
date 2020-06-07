@@ -1,0 +1,22 @@
+{{define "content"}}
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-container w3-theme w3-round">
+    <h3>Signup Now!</h3>
+  </header>
+  <form name="signup" class="w3-panel" method="POST" action="/signup">
+    {{csrfField}}
+    <label for="name" class="w3-text-theme"><b>Name:</b></label>
+    <input name="name" id="name" class="w3-input" type="text" value="{{.Name}}" placeholder="Your full name..." /><br />
+
+    <label for="email" class="w3-text-theme"><b>Email:</b></label>
+    <input name="email" id="email" class="w3-input" type="email" value="{{.Email}}" placeholder="Your email address..." /><br />
+
+    <label for="password" class="w3-text-theme"><b>Password:</b></label>
+    <input name="password" id="password" class="w3-input" type="password" value="" placeholder="Create a password: Keep it secret. Keep it safe." /><br />
+
+    <input class="w3-button w3-theme-action" type="submit" value="Signup!" />
+
+    <p class="w3-small">Already signed up? <a href="/login">Login here</a></p>
+  </form>
+</section>
+{{end}}

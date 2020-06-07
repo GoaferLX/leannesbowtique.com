@@ -1,0 +1,24 @@
+{{define "content" }}
+<section class="w3-section w3-white w3-card-4 w3-round">
+  <header class="w3-container w3-theme w3-round">
+    <h3>Login!</h3>
+  </header>
+  {{template "loginform" .}}
+</section>
+{{end}}
+
+{{define "loginform"}}
+<form name="login" class="w3-panel" method="POST" action="">
+  {{csrfField}}
+  <label for="email" class="w3-text-theme"><b>Email address</b></label>
+  <input name="email" id="email" class="w3-input" type="email" value="{{.Email}}" placeholder="Email address..."><br />
+
+  <label for="password" class="w3-text-theme"><b>Password</b></label>
+  <input name="password" id="password" class="w3-input" type="password" value="" placeholder="Password..."><br />
+
+  <input class="w3-button w3-theme-action" type="submit" value="Login!" />
+
+  <p class="w3-small"><a href="/forgot">Forgot Password?</a></p>
+  <p class="w3-small">No account? <a href="/signup">Signup here</a></p>
+</form>
+{{end}}

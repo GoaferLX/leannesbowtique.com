@@ -1,0 +1,36 @@
+{{define "content" }}
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-theme w3-round w3-container">
+    <h3>Gallery</h3>
+  </header>
+  <div class="w3-container">
+    <p>Find your perfect bow! Browse the gallery! Click any bow for more information!</p>
+  </div>
+  <div class="w3-bar w3-bottombar w3-padding w3-large">
+    <form class="w3-panel" method="GET" action="/products">
+      <label for="category" class="w3-bar-item w3-text-theme"><b>Category:</b></label>
+      <select name="category" id="category" class="w3-bar-item w3-select w3-border">
+        <option value="" selected="selected" disabled="disabled">Search by category...</option>
+        {{range .Categories}}
+        <option value="{{.ID}}">{{.Name}}</option>
+        {{end}}
+      </select>
+      <input class="w3-button w3-bar-item w3-round w3-theme-action" type="submit" value="Find my bow!" />
+      <input class="w3-button w3-bar-item w3-round w3-margin-left w3-theme-action" type="reset" value="Reset" />
+    </form>
+</div>
+
+  <div class="w3-row-padding w3-padding-16 w3-center">
+    {{range .Products}}
+    <div class="w3-third w3-mobile">
+      <a href="product/{{.ID}}" class="w3-panel w3-margin w3-button w3-card-4">
+
+        <img src="{{if .Images}}{{(index .Images 0).Path}}{{else}}/imgs/imagecomingsoon.png{{end}}" title="{{.Name}}" alt="Image coming soon!" class="w3-panel" height="300px" width="100%">
+
+        <p>{{.Name}}</p>
+      </a>
+    </div>
+  {{end}}
+  </div>
+</section>
+{{end}}

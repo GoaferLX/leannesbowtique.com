@@ -1,0 +1,39 @@
+{{define "content"}}
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <h3>Add Category!</h3>
+  {{template "cataddform"}}
+
+  <h3>Edit Existing Categories</h3>
+  {{range .}}
+    {{template "cateditform" .}}
+    {{template "catdeleteform" .}}
+  {{end}}
+</section>
+{{end}}
+
+{{define "cataddform"}}
+<form class="w3-panel" method="POST" action="">
+  {{csrfField}}
+  <label for="name" class="w3-text-theme"><b>Name:</b></label>
+  <input name="name" id="name" class="w3-input" type="text" value="{{.Name}}" placeholder="Category Name..." required="required" />
+  <input name="submit" class="w3-button w3-theme-action" type="submit" value="Add!" />
+</form>
+{{end}}
+
+{{define "cateditform"}}
+<form class="w3-panel" method="POST" action="{{.ID}}">
+  {{csrfField}}
+  <input name="id" class="w3-input"type="hidden" value="{{.ID}}" />
+  <label for="name" class="w3-text-theme"><b>Name:</b></label>
+  <input name="Name" id="name" class="w3-input" type="text" value="{{.Name}}" placeholder="Category Name..." required="required" />
+  <input name="submit" class="w3-button w3-theme-action" type="submit" value="Edit!" />
+</form>
+{{end}}
+
+{{define "catdeleteform"}}
+<form class="w3-panel" method="GET" action="{{.ID}}">
+  {{csrfField}}
+  <input name="id" class="w3-input" type="hidden" value="{{.ID}}" />
+  <input name="submit" class="w3-button w3-theme-action" type="submit" value="Delete!" />
+</form>
+{{end}}

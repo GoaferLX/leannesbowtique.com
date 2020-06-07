@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Leanne's Bowtique</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="author" content="Matthew Chipperfield">
+      <meta name="description" content="Leanne's Bowtique - bow making service">
+      <meta name="keywords" content="bowtique,bows,bow,bow making,basingstoke,Leanne Waller,">
+      <!-- Favicons -->
+      <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="imgs/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="imgs/favicon-16x16.png">
+      <!-- CSS -->
+      <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+      <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-purple.css">
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128038443-2"></script>
+      <script src="/js/gtag.js" charset="UTF-8"></script>
+      <!-- Script for local functions -->
+      <script src="/js/main.js" charset="UTF-8"></script>
+      <!-- fontawesome -->
+      <script src="https://kit.fontawesome.com/69601f1d0f.js" crossorigin="anonymous"></script>
+
+  </head>
+  <body class="w3-theme-l5">
+    <!-- Page Header -->
+    <div class="w3-top w3-theme">
+      <div class="w3-bar w3-theme w3-large w3-hide-medium w3-hide-large">
+        <span class="w3-bar-item w3-padding-large">Leanne's Bowtique</span>
+        <a class="w3-bar-item w3-button w3-padding-large w3-right w3-hide-medium w3-hide-large w3-hover-white" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars w3-margin-right"></i>Menu</a>
+      </div>
+      <!-- Navbar (within header) -->
+      {{template "navbar" .}}
+    </div>
+    <!-- End of header/ Main content begins -->
+    <!-- Content Container -->
+    <div class="w3-container w3-row w3-content w3-theme-l5" style="max-width:2160px;margin-top:80px">
+      <!-- Main Content (Left Column) -->
+      <main class="w3-col m8 l9 w3-container">
+      <!-- Alert Box -->
+      {{if .Alert}}
+        {{template "alert" .Alert}}
+      {{end}}
+      <!-- Page Content -->
+      {{template "content" .PageData}}
+      <!-- End left column -->
+      </main>
+      <!-- Social (Right Column) -->
+      <aside class="w3-col l3 m4 w3-container">
+        <div class="w3-section">
+          <header class="w3-container w3-round w3-theme">
+            <h3 class="">Find us on social media!</h3>
+          </header>
+          <div class="w3-container w3-card-4 w3-xxlarge w3-white w3-center w3-border">
+            <div class="w3-panel">
+              <div class="w3-row ">
+                <a href="https://www.facebook.com/leannesbowtique" class="fab fa-facebook w3-button w3-circle w3-hover-white w3-theme-action" target="_blank"></a>
+                <a href="https://www.instagram.com/leannesbowtique/" class="fab fa-instagram w3-button w3-circle w3-hover-white w3-theme-action" target="_blank"></a>
+                <a href="https://www.linkedin.com/in/leanne-waller-5a28681ab/" class="fab fa-linkedin w3-button w3-circle w3-hover-white w3-theme-action" target="_blank"></a>
+              </div>
+              <!--
+              <div class="w3-row">
+                <a href="" class="fab fa-twitter w3-button w3-circle w3-hover-white w3-theme-action"></a>
+                <a href="" class="fab fa-snapchat-ghost w3-button w3-circle w3-hover-white w3-theme-action"></a>
+                <a href="" class="fab fa-pinterest w3-button w3-circle w3-hover-white w3-theme-action"></a>
+              </div>
+              -->
+            </div>
+          </div>
+        </div>
+
+        <div id="fb-root">
+        </div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v6.0">
+        </script>
+        <div class="fb-page w3-section w3-card-4 w3-col w3-border w3-center" data-href="https://www.facebook.com/leannesbowtique" data-tabs="timeline,reviews" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false">
+          <blockquote cite="https://www.facebook.com/leannesbowtique" class="fb-xfbml-parse-ignore">
+            <a href="https://www.facebook.com/leannesbowtique">Leanne&#039;s Bow-tique</a>
+          </blockquote>
+        </div>
+      <!-- End Right Column -->
+    </aside>
+<!-- End Page Container -->
+</div>
+<br />
+
+<!-- Footer -->
+{{template "footer"}}
+</body>
+</html>

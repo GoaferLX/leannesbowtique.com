@@ -1,0 +1,47 @@
+{{define "content" }}
+<section class="w3-section w3-round w3-card-4 w3-white">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>View</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .}}
+        <tr>
+          <td>{{if .Images}}<img src="{{(index .Images 0).Path}}" height="75px" width="75px">{{end}}</td>
+          <td>{{.ID}}</td>
+          <td>{{.Name}}</td>
+          <td>{{.Description}}</td>
+          <td>{{printf "%.2f" .Price}}</td>
+          <td>
+            <a href="/product/{{.ID}}">
+              View
+            </a>
+          </td>
+          <td>
+            <a href="/product/{{.ID}}/edit">
+              Edit
+            </a>
+          </td>
+          <td>
+            <a href="/product/{{.ID}}/delete">
+              Delete
+            </a>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+    <a href="/product/new" class="">
+      New Product
+    </a>
+</section>
+{{end}}

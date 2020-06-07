@@ -1,0 +1,8 @@
+leannesbowtique.com {
+  encode zstd gzip
+  reverse_proxy  localhost:3000
+}
+www.leannesbowtique.com {
+  encode zstd gzip
+  reverse_proxy  localhost:3000
+}

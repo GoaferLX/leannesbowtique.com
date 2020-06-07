@@ -1,0 +1,73 @@
+{{define "content"}}
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-theme w3-round w3-container">
+    <h3>{{.Name}}</h3>
+  </header>
+
+  <div class="w3-row w3-panel">
+    <div class="w3-col s1 w3-panel w3-hide-small">
+      {{range $i, $a := .Images}}
+
+      <img src="{{$a.Path}}" class="w3-margin-bottom w3-hover-opacity" width="100%"
+      class="w3-button demo" onclick="currentDiv({{$i}})">
+
+      {{end}}
+    </div>
+    <div class="w3-col m8 w3-panel">
+      <div class="w3-card-4">
+        {{range .Images}}
+            <img class="mySlides" src="{{.Path}}" style="max-height:500px;"width="100%">
+        {{end}}
+      </div>
+
+      <div class="w3-center">
+        <div class="w3-section">
+          <button class="w3-button w3-light-grey" onclick="plusDivs(-1)">❮ Prev</button>
+          <button class="w3-button w3-light-grey" onclick="plusDivs(1)">Next ❯</button>
+        </div>
+        {{range $i, $a := .Images}}
+          <button class="w3-button demo" onclick="currentDiv({{$i}})">{{$i}}</button>
+        {{end}}
+      </div>
+  </div>
+  <div class="w3-col m3">
+    <p class="w3-large">{{.Description}}</p>
+    <p class=" w3-xlarge"><strong>£{{printf "%.2f" .Price}}</strong></p>
+    <p>{{range .Categories}}
+      <a href="/products?category={{.ID}}"><span class="w3-tag w3-theme w3-margin-bottom">{{.Name}}</span></a>
+    {{end}}
+    </p>
+  </div>
+</div>
+</section>
+<script>
+
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function currentDiv(n) {
+  showDivs(slideIndex = n+1);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-theme", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-theme";
+}
+
+</script>
+{{end}}

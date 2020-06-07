@@ -1,0 +1,57 @@
+{{define "content"}}
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-theme w3-container w3-round">
+      <h2>Leanne's Bowtique</h2>
+  </header>
+
+  <div class="w3-container">
+    <h3 class="w3-text-theme"><u>What we do</u></h3>
+    <p>I make high quality, affordable hair bows. Visit the <a href="https://leannesbowtique.com/products" class="w3-text-theme">gallery</a> to find your perfect bow.</p>
+    <p>All bows are handmade (no bow machines here)</p>
+    <p>If you have ideas for a bow of your own, please <span onclick="document.getElementById('contactmodal').style.display='block'" class="w3-text-theme w3-hover-light-grey">get in touch</span> to discuss your ideas and I will accomodate wherever possible.</p>
+  </div>
+</section>
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-container w3-round">
+      <h3 class="w3-text-theme"><u>Delivery</u></h3>
+  </header>
+  <div class="w3-container">
+    <p>UK Mainland delivery only.</p>
+    <p>Postage & Packaging free on all orders over £10.</p>
+    <p>All other orders £1.</p>
+  </div>
+</section>
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-container w3-round">
+      <h3 class="w3-text-theme"><u>Prices</u></h3>
+  </header>
+  <div class="w3-container">
+    <p>Prices vary depending on size and intricacy of the bow.  Please see the product pages for information on a per bow basis.</p>
+  </div>
+</section>
+
+<!-- The Modal -->
+<div id="contactmodal" class="w3-modal">
+  <div class="w3-modal-content">
+    <header class="w3-theme w3-container">
+      <h3>Send us a message...</h3>
+      <span onclick="document.getElementById('contactmodal').style.display='none'"
+      class="w3-button w3-display-topright">&times;</span>
+   </header>
+    {{template "contactform"}}
+  </div>
+</div>
+{{end}}
+
+{{define "contactform"}}
+<form class="w3-panel" method="POST" action="/contact">
+  {{csrfField}}
+  <label for="email" class="w3-text-theme"><b>Your Email address:</b></label>
+  <input name="email" id="email" class="w3-input" type="email" placeholder="So we can answer you..." required="required"><br />
+  <label for="subject" class="w3-text-theme"><b>Subject:</b></label>
+  <input name="subject" id="name" class="w3-input" type="text" placeholder="Why are you messaging?" required="required"><br />
+  <label for="message" class="w3-text-theme"><b>Message:</b></label>
+  <textarea name="message" id="message" class="w3-input" placeholder="What you like to share with us?" rows="5" style="resize:none" required="required"></textarea><br />
+  <button class="w3-button w3-theme" type="submit"><i class="fas fa-pencil-alt w3-margin-right" ></i>Send!</button>
+</form>
+{{end}}
