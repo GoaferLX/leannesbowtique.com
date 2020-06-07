@@ -3,12 +3,13 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"goafweb/models"
-	"goafweb/rand"
-	"goafweb/views"
 	"log"
 	"net/http"
 	"time"
+
+	"leannesbowtique.com/models"
+	"leannesbowtique.com/rand"
+	"leannesbowtique.com/views"
 )
 
 type UsersController struct {

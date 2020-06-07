@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"goafweb/models"
-	"goafweb/views"
+	"leannesbowtique.com/models"
+	"leannesbowtique.com/views"
 	"net/http"
 	"strconv"
 

@@ -3,8 +3,8 @@ package controllers
 import (
 	"errors"
 	"fmt"
-	"goafweb/models"
-	"goafweb/views"
+	"leannesbowtique.com/models"
+	"leannesbowtique.com/views"
 	"net/http"
 	"strconv"
 

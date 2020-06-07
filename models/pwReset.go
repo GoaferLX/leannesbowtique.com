@@ -2,9 +2,10 @@ package models
 
 import (
 	"fmt"
-	"goafweb/hash"
-	"goafweb/rand"
 	"time"
+
+	"leannesbowtique.com/hash"
+	"leannesbowtique.com/rand"
 
 	"github.com/jinzhu/gorm"
 )

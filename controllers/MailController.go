@@ -3,10 +3,11 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"goafweb/views"
 	"net/http"
 	"net/url"
 	"time"
+
+	"leannesbowtique.com/views"
 
 	"github.com/mailgun/mailgun-go"
 )

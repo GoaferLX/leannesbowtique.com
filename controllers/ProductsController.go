@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"fmt"
-	"goafweb/models"
-	"goafweb/views"
 	"net/http"
 	"strconv"
+
+	"leannesbowtique.com/models"
+	"leannesbowtique.com/views"
 
 	"github.com/gorilla/mux"
 )

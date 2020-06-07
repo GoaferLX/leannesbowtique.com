@@ -1,6 +1,6 @@
 package controllers
 
-import "goafweb/views"
+import "leannesbowtique.com/views"
 
 func StaticPage() *Page {
 	return &Page{

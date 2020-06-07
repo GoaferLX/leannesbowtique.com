@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"context"
-	"goafweb/models"
 	"net/http"
+
+	"leannesbowtique.com/models"
 )
 
 type User struct {

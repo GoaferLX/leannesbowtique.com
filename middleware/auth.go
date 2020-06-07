@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"goafweb/models"
-	"goafweb/views"
 	"net/http"
 	"strings"
+
+	"leannesbowtique.com/models"
+	"leannesbowtique.com/views"
 )
 
 type RequireUser struct {

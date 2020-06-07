@@ -3,11 +3,12 @@ package models
 import (
 	"errors"
 	"fmt"
-	"goafweb/hash"
-	"goafweb/rand"
 	"log"
 	"net/http"
 	"time"
+
+	"leannesbowtique.com/hash"
+	"leannesbowtique.com/rand"
 
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
