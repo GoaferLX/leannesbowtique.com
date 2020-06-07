@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"goafweb/controllers"
-	"goafweb/middleware"
-	"goafweb/models"
-	"goafweb/rand"
 	"log"
 	"net/http"
+
+	"leannesbowtique.com/controllers"
+	"leannesbowtique.com/middleware"
+	"leannesbowtique.com/models"
+	"leannesbowtique.com/rand"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/csrf"
