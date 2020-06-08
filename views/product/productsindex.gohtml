@@ -7,34 +7,38 @@
     <p>Find your perfect bow! Browse the gallery! Click any bow for more information!</p>
   </div>
   <div class="w3-padding w3-large">
-    <form class="w3-panel w3-bar w3-bottombar" method="GET" action="/products">
-      <label for="category" class="w3-bar-item w3-text-theme"><b>Category:</b></label>
-      <select name="category" id="category" class="w3-bar-item w3-select w3-border">
-        <option value="" selected="selected" disabled="disabled">Search by category...</option>
-        {{range .Categories}}
-        <option value="{{.ID}}" {{if eq .ID $.Form.CategoryID}}selected="selected"{{end}}>{{.Name}}</option>
-        {{end}}
-        <option value="">Show all</option>
-      </select>
-      <label for="limit" class="w3-text-theme w3-bar-item">Limit to:</label>
-      <select name="limit" id="limit" class="w3-select w3-bar-item w3-border">
-        <option value="1" {{if eq .Form.Limit 1}}selected="selected"{{end}}>1</option>
-        <option value="15" {{if  or (eq .Form.Limit 15) (eq .Form.Limit 0)}}selected="selected"{{end}}>15</option>
-        <option value="100" {{if eq .Form.Limit 100}}selected="selected"{{end}}>100</option>
-        <option value="">Show all</option>
-      </select>
-      <!--<label for="search" class="w3-text-theme w3-bar-item">Search:</label>
-      <input name="search" id="search" class="w3-input  w3-bar-item w3-border" type="search" />-->
-      <label for="sort" class="w3-text-theme w3-bar-item">Sort by:</label>
-      <select name="sort" id="sort" class="w3-select w3-bar-item w3-border">
-        <option value="1" {{if or (eq .Form.Sort 1) (eq .Form.Sort 0)}}selected="selected"{{end}}>Newest First</option>
-        <option value="2" {{if eq .Form.Sort 2}}selected="selected"{{end}}>Oldest First</option>
-        <option value="3" {{if eq .Form.Sort 3}}selected="selected"{{end}}>Price: High to Low</option>
-        <option value="4" {{if eq .Form.Sort 4}}selected="selected"{{end}}>Price: Low to High</option>
-      </select>
-      <br />
-      <input class="w3-button w3-round w3-theme-action" type="submit" value="Find my bow!" />
-      <!--<input name="reset" class="w3-button w3-bar-item w3-round w3-margin-left w3-theme-action" type="reset" value="Reset" />-->
+    <form class="w3-panel  w3-bottombar" method="GET" action="/products">
+      <div class="w3-bar">
+      <div class="w3-bar-item w3-mobile">
+        <label for="category" class="w3-bar-item w3-text-theme w3-mobile">Category:</label>
+        <select name="category" id="category" class="w3-bar-item  w3-select w3-border w3-mobile">
+          <option value="" selected="selected" disabled="disabled">Search by category...</option>
+          {{range .Categories}}
+          <option value="{{.ID}}" {{if eq .ID $.Form.CategoryID}}selected="selected"{{end}}>{{.Name}}</option>
+          {{end}}
+          <option value="">Show all</option>
+        </select>
+      </div>
+      <div class="w3-bar-item w3-mobile">
+        <label for="limit" class="w3-bar-item  w3-text-theme w3-mobile">Limit to:</label>
+        <select name="limit" id="limit" class="w3-bar-item  w3-select w3-border w3-mobile">
+          <option value="1" {{if eq .Form.Limit 1}}selected="selected"{{end}}>1</option>
+          <option value="15" {{if  or (eq .Form.Limit 15) (eq .Form.Limit 0)}}selected="selected"{{end}}>15</option>
+          <option value="100" {{if eq .Form.Limit 100}}selected="selected"{{end}}>100</option>
+          <option value="-1" {{if eq .Form.Limit -1}}selected="selected"{{end}}>Show all</option>
+        </select>
+      </div>
+      <div class="w3-bar-item w3-mobile">
+        <label for="sort" class="w3-bar-item w3-text-theme w3-mobile">Sort by:</label>
+        <select name="sort" id="sort" class="w3-bar-item w3-select w3-border w3-mobile">
+          <option value="1" {{if or (eq .Form.Sort 1) (eq .Form.Sort 0)}}selected="selected"{{end}}>Newest First</option>
+          <option value="2" {{if eq .Form.Sort 2}}selected="selected"{{end}}>Oldest First</option>
+          <option value="3" {{if eq .Form.Sort 3}}selected="selected"{{end}}>Price: High to Low</option>
+          <option value="4" {{if eq .Form.Sort 4}}selected="selected"{{end}}>Price: Low to High</option>
+        </select>
+      </div>
+    </div>
+      <input class="w3-button w3-round w3-theme-action w3-mobile" type="submit" value="Find my bow!" />
     </form>
 </div>
 

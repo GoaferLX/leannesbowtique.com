@@ -112,11 +112,11 @@ func (pv *productValidator) GetProducts(opts *ProductOpts) ([]*Product, error) {
 			return nil, catError
 		}
 	*/
-	if opts.Limit == 0 {
-		opts.Limit = 15
+	if opts.Limit == 0 || opts.Limit < -1 {
+		opts.Limit = -1
 	}
-	if opts.Sort < 0 || opts.Sort > 4 {
-		opts.Sort = 2
+	if opts.Sort < 1 || opts.Sort > 4 {
+		opts.Sort = 0
 	}
 
 	return pv.ProductDB.GetProducts(opts)
@@ -128,18 +128,20 @@ func (dbm *productDB) GetProducts(opts *ProductOpts) ([]*Product, error) {
 	var order string
 	switch opts.Sort {
 	case 1:
+		order = "created_at desc"
+	case 2:
 		order = "created_at asc"
 	case 3:
 		order = "price desc"
 	case 4:
 		order = "price asc"
 	default:
-		order = "created_at desc"
+		order = "id asc"
 	}
 	if opts.CategoryID != 0 {
 		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id =?", opts.CategoryID).Limit(opts.Limit).Order(order).Find(&products).Error
 	} else {
-		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Limit(opts.Limit).Order(order).Find(&products).Error
+		err = dbm.gorm.Preload("Categories").Limit(opts.Limit).Order(order).Find(&products).Error
 	}
 	if err != nil {
 		return nil, err

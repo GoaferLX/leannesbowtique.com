@@ -98,7 +98,7 @@ func (pc ProductsController) Create(w http.ResponseWriter, r *http.Request) {
 
 func (pc *ProductsController) ViewProductsIndex(w http.ResponseWriter, r *http.Request) {
 	yield := views.Page{}
-	opts := &models.ProductOpts{Limit: 3}
+	opts := &models.ProductOpts{}
 	products, err := pc.productService.GetProducts(opts)
 	if err != nil {
 		yield.SetAlert(err)
@@ -183,6 +183,12 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 	data.Form = &form
 	if err := parseGetForm(r, &form); err != nil {
 		fmt.Println(err)
+	}
+	if form.Sort < 1 || form.Sort > 4 {
+		form.Sort = 1
+	}
+	if form.Limit == 0 {
+		form.Limit = 15
 	}
 	opts := &models.ProductOpts{CategoryID: form.CategoryID, Limit: form.Limit, Sort: form.Sort}
 
