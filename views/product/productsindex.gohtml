@@ -36,16 +36,16 @@
         </select>
 
       <input class="w3-button w3-cell-middle w3-bar-item w3-round w3-theme-action w3-mobile" type="submit" value="Find my bow!" />
-    </div>
+    </div><br />
     {{if not (eq .Form.PageNum 1)}}
     <button name="pagenum" class="fas fa-arrow-circle-left w3-button" type="submit" value="{{.Form.PageDown}}"></button>
     {{end}}
     {{if not (eq .Form.Limit -1)}}Page {{.Form.PageNum}} of {{.Form.Total}}
     {{if not (eq .Form.PageNum .Form.Total)}}
     <button name="pagenum" class="fas fa-arrow-circle-right w3-button" type="submit" value="{{.Form.PageUp}}"></button>
-{{end}}
     {{end}}
-    <button name="limit" class="w3-button w3-theme-action  w3-round" type="submit" value={{if eq .Form.Limit -1}}"15"{{else}}"-1"{{end}}>
+    {{end}}
+    <button name="limit" class="w3-button w3-margin-left w3-round" type="submit" value={{if eq .Form.Limit -1}}"15"{{else}}"-1"{{end}}>
       {{if eq .Form.Limit -1}}Show Less{{else}}Show All{{end}}</button>
   <br /> <br />
   </form>

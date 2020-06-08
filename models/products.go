@@ -141,10 +141,10 @@ func (dbm *productDB) GetProducts(opts *ProductOpts) ([]*Product, error) {
 		order = "id asc"
 	}
 	if opts.CategoryID != 0 {
-		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id =?", opts.CategoryID).Offset(opts.Offset).Limit(opts.Limit).Order(order).Find(&products).Error
-		dbm.gorm.Table("products").Where("deleted_at IS NULL").Count(&opts.Total)
+		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id =?", opts.CategoryID).Order(order).Offset(opts.Offset).Limit(opts.Limit).Find(&products).Error
+		dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id = ? AND products.deleted_at IS NULL", opts.CategoryID).Order(order).Table("products").Count(&opts.Total)
 	} else {
-		err = dbm.gorm.Preload("Categories").Limit(opts.Limit).Offset(opts.Offset).Order(order).Find(&products).Error
+		err = dbm.gorm.Preload("Categories").Order(order).Limit(opts.Limit).Offset(opts.Offset).Find(&products).Error
 		dbm.gorm.Table("products").Where("deleted_at IS NULL").Count(&opts.Total)
 	}
 	if err != nil {
