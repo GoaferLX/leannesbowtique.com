@@ -98,8 +98,8 @@ func (pc ProductsController) Create(w http.ResponseWriter, r *http.Request) {
 
 func (pc *ProductsController) ViewProductsIndex(w http.ResponseWriter, r *http.Request) {
 	yield := views.Page{}
-
-	products, err := pc.productService.GetProducts("")
+	opts := &models.ProductOpts{Limit: 3}
+	products, err := pc.productService.GetProducts(opts)
 	if err != nil {
 		yield.SetAlert(err)
 		pc.indexView.RenderTemplate(w, r, yield)
@@ -162,6 +162,13 @@ func splitN(n int, products []*models.Product) [][]*models.Product {
 	return ret
 }
 
+type ProductOptsForm struct {
+	CategoryID int    `schema:"category"`
+	Limit      int    `schema:"limit"`
+	Search     string `schema:"search"`
+	Sort       int    `schema:"sort"`
+}
+
 // GET /Products
 // Index of all products, searchable by category
 func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Request) {
@@ -169,13 +176,17 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 	data := struct {
 		Products   []*models.Product
 		Categories []models.Category
+		Form       *ProductOptsForm
 	}{}
 	yield.PageData = &data
+	var form ProductOptsForm
+	data.Form = &form
+	if err := parseGetForm(r, &form); err != nil {
+		fmt.Println(err)
+	}
+	opts := &models.ProductOpts{CategoryID: form.CategoryID, Limit: form.Limit, Sort: form.Sort}
 
-	vars := mux.Vars(r)
-	cat, _ := vars["category"]
-
-	products, err := pc.productService.GetProducts(cat)
+	products, err := pc.productService.GetProducts(opts)
 	data.Products = products
 	if err != nil {
 		yield.SetAlert(err)

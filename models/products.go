@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"regexp"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -37,7 +36,7 @@ type ProductDB interface {
 	// Read
 	GetCategories() ([]Category, error)
 	GetByID(id int) (*Product, error)
-	GetProducts(category string) ([]*Product, error)
+	GetProducts(opts *ProductOpts) ([]*Product, error)
 }
 type productModel struct {
 	ProductDB
@@ -98,21 +97,49 @@ func (dbm *productDB) GetByID(id int) (*Product, error) {
 	return &product, nil
 }
 
-func (pv *productValidator) GetProducts(category string) ([]*Product, error) {
-	catError := errors.New("Not a valid category")
-	catRegex := regexp.MustCompile(`^[0-9]+`)
-	if !catRegex.MatchString(category) && category != "" {
-		return nil, catError
-	}
-	return pv.ProductDB.GetProducts(category)
+type ProductOpts struct {
+	Limit      int
+	Search     string
+	CategoryID int
+	Sort       int
 }
-func (dbm *productDB) GetProducts(category string) ([]*Product, error) {
+
+func (pv *productValidator) GetProducts(opts *ProductOpts) ([]*Product, error) {
+	/*
+		catError := errors.New("Not a valid category")
+		catRegex := regexp.MustCompile(`^[0-9]+`)
+		if !catRegex.MatchString(opts.CategoryID) && opts.CategoryID != "" {
+			return nil, catError
+		}
+	*/
+	if opts.Limit == 0 {
+		opts.Limit = 15
+	}
+	if opts.Sort < 0 || opts.Sort > 4 {
+		opts.Sort = 2
+	}
+
+	return pv.ProductDB.GetProducts(opts)
+}
+
+func (dbm *productDB) GetProducts(opts *ProductOpts) ([]*Product, error) {
 	var products []*Product
 	var err error
-	if category != "" {
-		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id=?", category).Order("price desc").Find(&products).Error
+	var order string
+	switch opts.Sort {
+	case 1:
+		order = "created_at asc"
+	case 3:
+		order = "price desc"
+	case 4:
+		order = "price asc"
+	default:
+		order = "created_at desc"
+	}
+	if opts.CategoryID != 0 {
+		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id =?", opts.CategoryID).Limit(opts.Limit).Order(order).Find(&products).Error
 	} else {
-		err = dbm.gorm.Preload("Categories").Order("price desc").Find(&products).Error
+		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Limit(opts.Limit).Order(order).Find(&products).Error
 	}
 	if err != nil {
 		return nil, err

@@ -91,8 +91,7 @@ func main() {
 	r.HandleFunc("/product/{id:[0-9]+}/deleteimage/{filename}", authMW.AllowFunc(productsController.DeleteImage)).Methods("POST")
 	// Products collective
 	r.HandleFunc("/", productsController.ViewProducts).Methods("GET")
-	r.HandleFunc("/products", productsController.ViewProducts).Methods("GET").Queries("category", "{category}")
-	r.HandleFunc("/products", productsController.ViewProducts).Methods("GET").Name("products")
+	r.HandleFunc("/products", productsController.ViewProducts).Methods("GET")
 	r.HandleFunc("/productsindex", authMW.AllowFunc(productsController.ViewProductsIndex)).Methods("GET")
 
 	r.HandleFunc("/product/category/", authMW.AllowFunc(categoryController.View)).Methods("GET")
