@@ -198,7 +198,7 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 		fmt.Println(err)
 	}
 	if form.Limit > -1 {
-		form.Limit = 5
+		form.Limit = 6
 	}
 	if form.Sort < 1 || form.Sort > 4 {
 		form.Sort = 3
