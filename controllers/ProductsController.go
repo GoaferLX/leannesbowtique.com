@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -167,6 +168,18 @@ type ProductOptsForm struct {
 	Limit      int    `schema:"limit"`
 	Search     string `schema:"search"`
 	Sort       int    `schema:"sort"`
+	PageNum    int    `schema:"pagenum"`
+	Total      int
+}
+
+func (p ProductOptsForm) PageUp() string {
+	num := p.PageNum + 1
+	return strconv.Itoa(num)
+
+}
+func (p ProductOptsForm) PageDown() string {
+	num := p.PageNum - 1
+	return strconv.Itoa(num)
 }
 
 // GET /Products
@@ -179,20 +192,24 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 		Form       *ProductOptsForm
 	}{}
 	yield.PageData = &data
-	var form ProductOptsForm
+	var form ProductOptsForm = ProductOptsForm{PageNum: 1, Limit: 5, Sort: 3}
 	data.Form = &form
 	if err := parseGetForm(r, &form); err != nil {
 		fmt.Println(err)
 	}
+	if form.Limit > -1 {
+		form.Limit = 5
+	}
 	if form.Sort < 1 || form.Sort > 4 {
-		form.Sort = 1
+		form.Sort = 3
 	}
-	if form.Limit == 0 {
-		form.Limit = 15
-	}
-	opts := &models.ProductOpts{CategoryID: form.CategoryID, Limit: form.Limit, Sort: form.Sort}
+	offset := ((form.PageNum) * form.Limit) - form.Limit
 
+	opts := &models.ProductOpts{CategoryID: form.CategoryID, Limit: form.Limit, Sort: form.Sort, Offset: offset}
 	products, err := pc.productService.GetProducts(opts)
+	fmt.Println(opts.Total)
+	form.Total = int(math.Ceil(float64(opts.Total) / float64(opts.Limit)))
+
 	data.Products = products
 	if err != nil {
 		yield.SetAlert(err)
