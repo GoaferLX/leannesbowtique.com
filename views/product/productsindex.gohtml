@@ -56,7 +56,7 @@
       <a href="product/{{.ID}}" class="w3-card-4 w3-button">
         <img src="{{if .Images}}{{(index .Images 0).Path}}{{else}}/imgs/imagecomingsoon.png{{end}}" title="{{.Name}}" alt="Image coming soon!" width="100%;"  style="max-height:300px;">
         <div>
-          <span class="w3-text-theme w3-xlarge ">{{.Name}}</span><br />
+          <h3 class="w3-text-theme w3-xlarge ">{{.Name}}</h3>
           <span class=" w3-opacity ">£{{printf "%.2f" .Price}}</span>
         </div>
       </a>
