@@ -38,9 +38,11 @@
     <button name="pagenum" class="fas fa-arrow-circle-right w3-button" type="submit" value="{{.Form.PageUp}}"></button>
     {{end}}
     {{end}}
+    {{if ne .Form.Total .Form.PageNum}}
     <button name="limit" class=" w3-right w3-hide-medium w3-hide-large w3-button w3-margin-left w3-round" type="submit" value={{if eq .Form.Limit -1}}"15"{{else}}"-1"{{end}}>
       {{if eq .Form.Limit -1}}Show Less{{else}}Show All{{end}}
     </button>
+  {{end}}
     {{if ne .Form.Total .Form.PageNum}}
     <button name="limit" class="w3-hide-small w3-button w3-margin-left w3-round" type="submit" value={{if eq .Form.Limit -1}}"15"{{else}}"-1"{{end}}>
       {{if eq .Form.Limit -1}}Show Less{{else}}Show All{{end}}
