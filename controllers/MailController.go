@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"regexp"
 	"time"
 
 	"leannesbowtique.com/views"
@@ -35,6 +36,13 @@ func (mc *MailController) Contact(w http.ResponseWriter, r *http.Request) {
 	var yield views.Page
 	if err := parsePostForm(r, &form); err != nil {
 		yield.SetAlert(err)
+		mc.ContactView.RenderTemplate(w, r, yield)
+		return
+	}
+
+	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,16}$`)
+	if !emailRegex.MatchString(form.Email) {
+		yield.SetAlert(errors.New("Not a valid email"))
 		mc.ContactView.RenderTemplate(w, r, yield)
 		return
 	}
