@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -41,15 +43,16 @@ func (mc *MailController) Contact(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 	_, _, err := mc.mg.Send(ctx, msg)
-	if err != nil {
-		err = fmt.Errorf("Mailgun Error, could not send: %w", err)
-	}
-	yield.SetAlert(err)
-	mc.ContactView.RenderTemplate(w, r, yield)
 
+	if err != nil {
+		log.Print(err)
+		err = errors.New("There has been an error sending your message. Please try again. If the problem persists please let us know by emailing directly to support@leannesbowtique.com")
+		yield.SetAlert(err)
+		mc.ContactView.RenderTemplate(w, r, yield)
+	}
 	yield.Alert = &views.Alert{
 		Level:   "Success",
-		Message: "Your message has been sent, thanks!",
+		Message: "Your message has been sent. Thanks! We will reply ASAP.",
 	}
 	mc.ContactView.RenderTemplate(w, r, yield)
 }
@@ -99,7 +102,7 @@ func (mc *MailController) ResetPw(toEmail, token string) error {
 	defer cancel()
 	_, _, err := mc.mg.Send(ctx, message)
 	if err != nil {
-		err = fmt.Errorf("Mailgun Error, could not send: %w", err)
+		return fmt.Errorf("Mailgun Error, could not send: %w", err)
 	}
 	return nil
 }

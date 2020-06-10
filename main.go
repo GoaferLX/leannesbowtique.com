@@ -25,6 +25,7 @@ func main() {
 	dbcfg := cfg.Database
 	mgcfg := cfg.Mailgun
 	mgclient := mailgun.NewMailgun(mgcfg.Domain, mgcfg.APIKey)
+	mgclient.SetAPIBase(mailgun.APIBaseEU)
 
 	services, err := models.NewServices(
 		models.WithGorm(dbcfg.Dialect, dbcfg.dsn(), cfg.isProd()),
