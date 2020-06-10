@@ -14,6 +14,7 @@
           {{range .Categories}}
           <option value="{{.ID}}" {{if eq .ID $.Form.CategoryID}}selected="selected"{{end}}>{{.Name}}</option>
           {{end}}
+
           <option value="">Show all</option>
         </select>
 
@@ -40,14 +41,13 @@
     <button name="limit" class=" w3-right w3-hide-medium w3-hide-large w3-button w3-margin-left w3-round" type="submit" value={{if eq .Form.Limit -1}}"15"{{else}}"-1"{{end}}>
       {{if eq .Form.Limit -1}}Show Less{{else}}Show All{{end}}
     </button>
+    {{if ne .Form.Total .Form.PageNum}}
     <button name="limit" class="w3-hide-small w3-button w3-margin-left w3-round" type="submit" value={{if eq .Form.Limit -1}}"15"{{else}}"-1"{{end}}>
       {{if eq .Form.Limit -1}}Show Less{{else}}Show All{{end}}
     </button>
-
-
-
     {{end}}
-  <br />
+    {{end}}
+  <br /><br />
   </form>
 
   <div class="w3-row w3-container">
