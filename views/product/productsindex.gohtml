@@ -29,6 +29,8 @@
     </div><br />
 
     {{block "pagination" .}}
+    {{if eq .Form.Total 0}}No results to display
+    {{else}}
     {{if not (eq .Form.PageNum 1)}}
     <button name="pagenum" class="fas fa-arrow-circle-left w3-button" type="submit" value="{{.Form.PageDown}}"></button>
     {{end}}
@@ -46,6 +48,7 @@
     <button name="limit" class="w3-hide-small w3-button w3-margin-left w3-round" type="submit" value={{if eq .Form.Limit -1}}"15"{{else}}"-1"{{end}}>
       {{if eq .Form.Limit -1}}Show Less{{else}}Show All{{end}}
     </button>
+    {{end}}
     {{end}}
     {{end}}
   <br /><br />
