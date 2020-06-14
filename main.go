@@ -33,6 +33,7 @@ func main() {
 		models.WithProducts(),
 		models.WithCategories(),
 		models.WithImages(),
+		models.WithBundles(),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -44,6 +45,7 @@ func main() {
 	usersController := controllers.NewUsers(services.UserService, mailController)
 	productsController := controllers.NewProductsController(services.ProductService, services.ImageService)
 	categoryController := controllers.NewCategories(services.CategoryService)
+	bundlesController := controllers.NewBundlesController(services.BundleService)
 
 	// Inititate middlewares
 	userMW := middleware.User{UserModel: services.UserService}
@@ -100,6 +102,8 @@ func main() {
 	r.HandleFunc("/product/category/{id:[0-9]+}", authMW.AllowFunc(categoryController.Update)).Methods("POST")
 	r.HandleFunc("/product/category/{id:[0-9]+}", authMW.AllowFunc(categoryController.Delete)).Methods("GET")
 
+	r.HandleFunc("/bundle/view", bundlesController.ViewBundle).Methods("GET")
+	r.HandleFunc("/bundles/view", bundlesController.ViewBundles).Methods("GET")
 	log.Printf("Server listening on port: %d", cfg.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfmw(userMW.Allow(r))))
 

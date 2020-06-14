@@ -1,0 +1,36 @@
+{{define "content"}}
+<section class="w3-section">
+  <div class="w3-container w3-border">
+    {{range .}}
+    <div class="mySlides w3-containter">
+      <h3>{{.Name}}</h3>
+      <h4>{{.Price}}</h4>
+      <p>{{.Description}}</p>
+      <ul>
+        {{range .Products}}
+        <li>{{.Name}} - {{.Description}}</li>
+        {{end}}
+      </ul>
+    </div>
+    {{end}}
+  </div>
+
+</section>
+
+<script>
+var slideIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  slideIndex++;
+  if (slideIndex > x.length) {slideIndex = 1}
+  x[slideIndex-1].style.display = "block";
+  setTimeout(carousel, 2000);
+}
+</script>
+{{end}}

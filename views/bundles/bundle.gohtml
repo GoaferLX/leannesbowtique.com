@@ -1,0 +1,14 @@
+{{define "content"}}
+<section class="w3-section">
+<div>
+  <h3>{{.Name}}</h3>
+  <h4>{{.Price}}</h4>
+  <p>{{.Description}}</p>
+  <ul>
+    {{range .Products}}
+    <li>{{.Name}} - {{.Description}}</li>
+    {{end}}
+  </ul>
+</div>
+</section>
+{{end}}

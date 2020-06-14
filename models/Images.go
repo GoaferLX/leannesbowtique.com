@@ -27,7 +27,8 @@ func NewImageService() ImageService {
 	return &imageModel{}
 }
 
-type imageModel struct{}
+type imageModel struct {
+}
 
 // Path is used to build the absolute path used to reference this image
 // via a web request.
