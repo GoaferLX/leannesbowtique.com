@@ -74,6 +74,7 @@ func WithCategories() serviceOpts {
 	}
 }
 
+/*
 // Loads images service, allows storing and retrival of images from local storage
 func WithImages() serviceOpts {
 	return func(services *Services) error {
@@ -81,7 +82,7 @@ func WithImages() serviceOpts {
 		return nil
 	}
 }
-
+*/
 // Loads Bundle service for creating and managing groups of products
 func WithBundles() serviceOpts {
 	return func(services *Services) error {

@@ -2,15 +2,13 @@
 <section class="w3-section">
   <div class="w3-container w3-border">
     {{range .}}
-    <div class="mySlides w3-containter">
-      <h3>{{.Name}}</h3>
-      <h4>{{.Price}}</h4>
-      <p>{{.Description}}</p>
-      <ul>
-        {{range .Products}}
-        <li>{{.Name}} - {{.Description}}</li>
-        {{end}}
-      </ul>
+    <div class="mySlides w3-container w3-animate-opacity">
+      <div class="w3-half">
+        <h3>{{.Name}}</h3>
+        <h4>{{.Price}}</h4>
+        <p>{{.Description}}</p>
+      </div>
+      <img class="w3-half" src="{{(index .Images 0).Path}}" style="max-height:250px" width="100%" title="" alt="" />
     </div>
     {{end}}
   </div>
@@ -30,7 +28,7 @@ function carousel() {
   slideIndex++;
   if (slideIndex > x.length) {slideIndex = 1}
   x[slideIndex-1].style.display = "block";
-  setTimeout(carousel, 2000);
+  setTimeout(carousel, 4000);
 }
 </script>
 {{end}}

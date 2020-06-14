@@ -32,7 +32,7 @@ func main() {
 		models.WithUsers(cfg.PWPepper, cfg.HMACKey),
 		models.WithProducts(),
 		models.WithCategories(),
-		models.WithImages(),
+		//	models.WithImages(),
 		models.WithBundles(),
 	)
 	if err != nil {
@@ -43,7 +43,7 @@ func main() {
 	}
 	mailController := controllers.NewMail(mgclient)
 	usersController := controllers.NewUsers(services.UserService, mailController)
-	productsController := controllers.NewProductsController(services.ProductService, services.ImageService)
+	productsController := controllers.NewProductsController(services.ProductService, models.NewImageService("products"))
 	categoryController := controllers.NewCategories(services.CategoryService)
 	bundlesController := controllers.NewBundlesController(services.BundleService)
 

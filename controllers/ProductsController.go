@@ -107,7 +107,7 @@ func (pc *ProductsController) ViewProductsIndex(w http.ResponseWriter, r *http.R
 		return
 	}
 	for _, product := range products {
-		images, _ := pc.imageService.ByID(product.ID)
+		images, _ := pc.imageService.GetByEntityID(product.ID)
 		product.Images = images
 	}
 	yield.PageData = products
@@ -133,7 +133,7 @@ func (pc *ProductsController) productByID(w http.ResponseWriter, r *http.Request
 		pc.productView.RenderTemplate(w, r, yield)
 		return nil
 	}
-	images, _ := pc.imageService.ByID(product.ID)
+	images, _ := pc.imageService.GetByEntityID(product.ID)
 	product.Images = images
 	return product
 
@@ -219,7 +219,7 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 
 	// Attach images to each product
 	for _, product := range products {
-		images, _ := pc.imageService.ByID(product.ID)
+		images, _ := pc.imageService.GetByEntityID(product.ID)
 		product.Images = images
 	}
 

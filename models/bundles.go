@@ -13,6 +13,7 @@ type Bundle struct {
 	Description string    `gorm:"not null;"`
 	Price       float64   `gorm:"not null;"`
 	Products    []Product `gorm:"many2many:product_bundles;"`
+	Images      []Image
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   *time.Time
@@ -56,7 +57,7 @@ func (dbm bundleDB) GetByID(id int) (*Bundle, error) {
 }
 func (dbm bundleDB) GetBundles() ([]*Bundle, error) {
 	var bundles []*Bundle
-	err := dbm.gorm.Find(&bundles).Error
+	err := dbm.gorm.Preload("Products").Find(&bundles).Error
 	return bundles, err
 }
 func (dbm bundleDB) Create(b *Bundle) error {
