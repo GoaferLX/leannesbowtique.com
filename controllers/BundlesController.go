@@ -10,6 +10,7 @@ import (
 type BundlesController struct {
 	BundleView    *views.View
 	BundlesView   *views.View
+	NewBundleView *views.View
 	BundleService models.BundleService
 }
 
@@ -17,10 +18,14 @@ func NewBundlesController(bs models.BundleService) *BundlesController {
 	return &BundlesController{
 		BundleView:    views.NewView("index.gohtml", "views/bundles/bundle.gohtml"),
 		BundlesView:   views.NewView("index.gohtml", "views/bundles/bundles.gohtml"),
+		NewBundleView: views.NewView("index.gohtml", "views/bundles/newbundle.gohtml"),
 		BundleService: bs,
 	}
 }
+func (bc *BundlesController) NewBundle(w http.ResponseWriter, r *http.Request) {
+	bc.NewBundleView.RenderTemplate(w, r, nil)
 
+}
 func (bc *BundlesController) ViewBundle(w http.ResponseWriter, r *http.Request) {
 	var yield views.Page
 	bundle, err := bc.BundleService.GetByID(1)

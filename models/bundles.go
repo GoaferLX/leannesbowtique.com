@@ -36,6 +36,9 @@ type BundleDB interface {
 type bundleModel struct {
 	BundleDB
 }
+type bundleValidator struct {
+	BundleDB
+}
 type bundleDB struct {
 	gorm *gorm.DB
 }
@@ -60,9 +63,31 @@ func (dbm bundleDB) GetBundles() ([]*Bundle, error) {
 	err := dbm.gorm.Preload("Products").Find(&bundles).Error
 	return bundles, err
 }
+
+func (bv *bundleValidator) Create(b *Bundle) error {
+	if err := Validate(b.Name, isRequired); err != nil {
+		return err
+	}
+	if err := Validate(b.Description, isRequired); err != nil {
+		return err
+	}
+	if err := Validate(b.Price, isRequired, isGreaterThan0); err != nil {
+		return err
+	}
+	var prods []Product
+	for _, prod := range b.Products {
+		if prod.ID != 0 {
+			prods = append(prods, prod)
+		}
+		b.Products = prods
+	}
+	return bv.BundleDB.Create(b)
+}
+
 func (dbm bundleDB) Create(b *Bundle) error {
 	return dbm.gorm.Create(b).Error
 }
+
 func (dbm bundleDB) Update(b *Bundle) error {
 	return dbm.gorm.Save(b).Error
 }
