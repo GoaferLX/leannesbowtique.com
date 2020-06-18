@@ -32,7 +32,8 @@ func main() {
 		models.WithUsers(cfg.PWPepper, cfg.HMACKey),
 		models.WithProducts(),
 		models.WithCategories(),
-		models.WithImages(),
+		//	models.WithImages(),
+		models.WithBundles(),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -42,8 +43,9 @@ func main() {
 	}
 	mailController := controllers.NewMail(mgclient)
 	usersController := controllers.NewUsers(services.UserService, mailController)
-	productsController := controllers.NewProductsController(services.ProductService, services.ImageService)
+	productsController := controllers.NewProductsController(services.ProductService, models.NewImageService("products"))
 	categoryController := controllers.NewCategories(services.CategoryService)
+	bundlesController := controllers.NewBundlesController(services.BundleService)
 
 	// Inititate middlewares
 	userMW := middleware.User{UserModel: services.UserService}
@@ -99,6 +101,10 @@ func main() {
 	r.HandleFunc("/product/category/", authMW.AllowFunc(categoryController.Create)).Methods("POST")
 	r.HandleFunc("/product/category/{id:[0-9]+}", authMW.AllowFunc(categoryController.Update)).Methods("POST")
 	r.HandleFunc("/product/category/{id:[0-9]+}", authMW.AllowFunc(categoryController.Delete)).Methods("GET")
+
+	r.HandleFunc("/bundle/view", bundlesController.ViewBundle).Methods("GET")
+	r.HandleFunc("/bundles/view", bundlesController.ViewBundles).Methods("GET")
+	r.HandleFunc("/bundle/new", bundlesController.NewBundle).Methods("GET")
 
 	log.Printf("Server listening on port: %d", cfg.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfmw(userMW.Allow(r))))

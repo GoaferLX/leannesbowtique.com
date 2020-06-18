@@ -13,21 +13,26 @@ type Image struct {
 	// The entity the image is associated with e.g. a User ID for an Avatar image
 	EntityID int
 	Filename string
+	Filepath string
 }
 
 // Defines API for interacting with images
 type ImageService interface {
 	Create(id int, r io.Reader, filename string) error
 	//Looks up Images associated with an EntityID
-	ByID(id int) ([]Image, error)
+	GetByEntityID(entid int) ([]Image, error)
 	Delete(i *Image) error
 }
 
-func NewImageService() ImageService {
-	return &imageModel{}
+func NewImageService(path string) ImageService {
+	return &imageModel{
+		Filepath: path,
+	}
 }
 
-type imageModel struct{}
+type imageModel struct {
+	Filepath string
+}
 
 // Path is used to build the absolute path used to reference this image
 // via a web request.
@@ -40,8 +45,8 @@ func (i *Image) Path() string {
 // disk, relative to where our Go application is run from.
 func (i *Image) RelativePath() string {
 	// Convert the gallery ID to a string
-	id := fmt.Sprintf("%v", i.EntityID)
-	return filepath.ToSlash(filepath.Join("images", "products", id, i.Filename))
+	//id := fmt.Sprintf("%v", i.EntityID)
+	return filepath.ToSlash(filepath.Join(i.Filepath, i.Filename))
 }
 
 func (is *imageModel) Create(id int, r io.Reader, filename string) error {
@@ -63,7 +68,7 @@ func (is *imageModel) Create(id int, r io.Reader, filename string) error {
 	return nil
 }
 
-func (im *imageModel) ByID(id int) ([]Image, error) {
+func (im *imageModel) GetByEntityID(id int) ([]Image, error) {
 	path := im.imagePath(id)
 	strings, err := filepath.Glob(filepath.Join(path, "*"))
 	if err != nil {
@@ -75,6 +80,7 @@ func (im *imageModel) ByID(id int) ([]Image, error) {
 		ret[i] = Image{
 			Filename: filepath.Base(imgStr),
 			EntityID: id,
+			Filepath: filepath.Dir(imgStr),
 		}
 	}
 	return ret, nil
@@ -86,7 +92,7 @@ func (im *imageModel) Delete(i *Image) error {
 
 // Going to need this when we know it is already made
 func (im *imageModel) imagePath(id int) string {
-	return filepath.Join("images", "products",
+	return filepath.Join("images", im.Filepath,
 		fmt.Sprintf("%v", id))
 }
 
