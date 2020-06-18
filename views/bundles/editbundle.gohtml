@@ -4,6 +4,9 @@
   <div class="">
     {{template "editBundleForm" .}}
   </div>
+  <div>
+    {{template "uploadImageForm" .Bundle}}
+  </div>
 </section>
 {{end}}
 
@@ -27,6 +30,17 @@
     <input name="Products.{{.ID}}.ID" id="Products.{{.ID}}.ID" class="w3-check"  value="{{.ID}}" type="checkbox">{{.Name}}<br />
     {{end}}
 
-  <input class="w3-button w3-theme-action" type="submit" value="Add!" />
+  <input class="w3-button w3-theme-action" type="submit" value="Edit!" />
+</form>
+{{end}}
+
+{{define "uploadImageForm"}}
+<form class="w3-panel" action="/bundle/{{.ID}}/uploadimage" multiple="multiple" method="POST" enctype="multipart/form-data">
+  {{csrfField}}
+    <label for="images" class="w3-text-theme">Add Images:</label>
+    <input name="images" id="images" class="w3-input" type="file" multiple="multiple" />
+
+    <p>Please only use jpg, jpeg, and png.</p>
+    <input class="w3-button w3-theme-action" type="submit" value="Upload!" />
 </form>
 {{end}}

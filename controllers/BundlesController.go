@@ -82,9 +82,26 @@ func (bc BundlesController) Create(w http.ResponseWriter, r *http.Request) {
 	url := fmt.Sprintf("/bundle/%d/edit", bundle.ID)
 	http.Redirect(w, r, url, http.StatusFound)
 }
+func (bc *BundlesController) GetByID(w http.ResponseWriter, r *http.Request) *models.Bundle {
+	var yield *views.Page
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		yield.SetAlert(err)
+		bc.EditBundleView.RenderTemplate(w, r, yield)
+		return nil
+	}
+	bundle, err := bc.BundleService.GetByID(id)
+	if err != nil {
+		yield.SetAlert(err)
+		bc.EditBundleView.RenderTemplate(w, r, yield)
+		return nil
+	}
+	return bundle
+}
 
 // GET /edit
-func (bc BundlesController) Edit(w http.ResponseWriter, r *http.Request) {
+func (bc *BundlesController) Edit(w http.ResponseWriter, r *http.Request) {
 	var yield views.Page
 	data := struct {
 		Bundle   *models.Bundle
@@ -99,19 +116,7 @@ func (bc BundlesController) Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data.Products = products
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		yield.SetAlert(err)
-		bc.EditBundleView.RenderTemplate(w, r, yield)
-		return
-	}
-	bundle, err := bc.BundleService.GetByID(id)
-	if err != nil {
-		yield.SetAlert(err)
-		bc.EditBundleView.RenderTemplate(w, r, yield)
-		return
-	}
+	bundle := bc.GetByID(w, r)
 	data.Bundle = bundle
 	bc.EditBundleView.RenderTemplate(w, r, yield)
 }
@@ -121,23 +126,66 @@ func (bc BundlesController) Update(w http.ResponseWriter, r *http.Request) {
 	var yield views.Page
 	var form BundlesForm
 	yield.PageData = &form
-
+	bundle := bc.GetByID(w, r)
 	if err := parsePostForm(r, &form); err != nil {
 		yield.SetAlert(err)
 		bc.NewBundleView.RenderTemplate(w, r, yield)
 		return
 	}
-	bundle := models.Bundle{
-		Name:        form.Name,
-		Description: form.Description,
-		Price:       form.Price,
-		Products:    form.Products,
-	}
-	if err := bc.BundleService.Update(&bundle); err != nil {
+
+	bundle.Name = form.Name
+	bundle.Description = form.Description
+	bundle.Price = form.Price
+	bundle.Products = form.Products
+
+	if err := bc.BundleService.Update(bundle); err != nil {
 		yield.SetAlert(err)
 		bc.NewBundleView.RenderTemplate(w, r, yield)
 		return
 	}
+	url := fmt.Sprintf("/bundle/%d/edit", bundle.ID)
+	http.Redirect(w, r, url, http.StatusFound)
+}
+
+func (bc *BundlesController) ImageUpload(w http.ResponseWriter, r *http.Request) {
+	var yield views.Page
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		yield.SetAlert(err)
+		bc.EditBundleView.RenderTemplate(w, r, yield)
+		return
+	}
+
+	if err := r.ParseMultipartForm(1 << 20); err != nil {
+		yield.SetAlert(err)
+		bc.EditBundleView.RenderTemplate(w, r, yield)
+		return
+	}
+	bundle, _ := bc.BundleService.GetByID(id)
+	// Iterate over uploaded files to process them.
+	fheaders := r.MultipartForm.File["images"]
+	for _, f := range fheaders {
+		// Open the uploaded file
+		file, err := f.Open()
+		if err != nil {
+			yield.SetAlert(err)
+			bc.EditBundleView.RenderTemplate(w, r, yield)
+			return
+		}
+		defer file.Close()
+
+		is := models.NewImageService("bundles")
+		// Create the image
+		if err := is.Create(bundle.ID, file, f.Filename); err != nil {
+			yield.SetAlert(err)
+			bc.EditBundleView.RenderTemplate(w, r, yield)
+			return
+		}
+	}
+
+	alert := &views.Alert{Level: "Success", Message: "Images uploaded successfully"}
+	alert.PersistAlert(w)
 	url := fmt.Sprintf("/bundle/%d/edit", bundle.ID)
 	http.Redirect(w, r, url, http.StatusFound)
 }
