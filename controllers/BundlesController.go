@@ -206,6 +206,10 @@ func (bc *BundlesController) ViewBundle(w http.ResponseWriter, r *http.Request) 
 		bc.BundleView.RenderTemplate(w, r, yield)
 		return
 	}
+	is := models.NewImageService("bundles")
+	images, _ := is.GetByEntityID(bundle.ID)
+	bundle.Images = images
+
 	yield.PageData = bundle
 	bc.BundleView.RenderTemplate(w, r, yield)
 }

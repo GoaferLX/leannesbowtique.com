@@ -1,14 +1,64 @@
 {{define "content"}}
-<section class="w3-section">
-<div>
-  <h3>{{.Name}}</h3>
-  <h4>{{.Price}}</h4>
-  <p>{{.Description}}</p>
-  <ul>
-    {{range .Products}}
-    <li>{{.Name}} - {{.Description}}</li>
-    {{end}}
-  </ul>
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-theme w3-round w3-container">
+    <h3>{{.Name}}</h3>
+  </header>
+  <div class="w3-container">
+    <div class="w3-half">
+      <h3 class="w3-text-theme">£{{printf "%.2f" .Price}}</h3>
+      <p>{{.Description}}</p>
+
+<p class="w3-large">Bows included in this bundle:</p>
+      <ul class="w3-ul w3-hoverable">
+
+        {{range .Products}}
+        <a class="w3-text-theme" href="/product/{{.ID}}" style="text-decoration:none;"><li>{{.Name}} - {{.Description}}</li></a>
+        {{end}}
+      </ul>
+
+    </div>
+    <div class="w3-half w3-panel" style="max-width:1200px">
+      {{range .Images}}
+      <img class="mySlides" src="{{.Path}}" title="{{$.Name}}" alt="Image coming soon!" style="width:100%;max-height:300px;display:none" />
+      {{end}}
+      <div class="w3-row-padding w3-section">
+        {{range $i, $a := .Images}}
+        <div class="w3-col s4">
+          <img class="demo w3-opacity w3-hover-opacity-off" src="{{$a.Path}}" alt="Image coming soon!" onclick="currentDiv({{$i}})" style="width:100%;max-height:100px;cursor:pointer" />
+        </div>
+        {{end}}
+      </div>
+    </div>
 </div>
 </section>
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function currentDiv(n) {
+  showDivs(slideIndex = n+1);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-theme", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-theme";
+}
+
+</script>
+</script>
 {{end}}
