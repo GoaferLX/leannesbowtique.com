@@ -76,7 +76,6 @@ func (pc ProductsController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	data.Categories = cats
 
-	fmt.Println(yield)
 	if err := parsePostForm(r, &form); err != nil {
 		yield.SetAlert(err)
 		pc.CreateView.RenderTemplate(w, r, yield)

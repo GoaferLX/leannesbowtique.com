@@ -1,14 +1,14 @@
 {{define "content"}}
 <section class="w3-section w3-round w3-card-4 w3-white">
-  <h3 class="">New Bundle</h3>
+  <h3 class="">Edit Bundle</h3>
   <div class="">
-    {{template "newBundleForm" .}}
+    {{template "editBundleForm" .}}
   </div>
 </section>
 {{end}}
 
-{{define "newBundleForm"}}
-<form class="w3-panel" action="/bundle/new" method="POST">
+{{define "editBundleForm"}}
+<form class="w3-panel" action="/bundle/{{.Bundle.ID}}/edit" method="POST">
   {{csrfField}}
   <label for="name" id="name" class="w3-text-theme">Name:</label>
   <input name="name" class="w3-input" type="text" placeholder="Whats it called?" value="{{.Bundle.Name}}" />

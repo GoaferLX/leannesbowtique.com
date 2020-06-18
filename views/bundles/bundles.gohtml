@@ -8,7 +8,7 @@
         <h4>{{.Price}}</h4>
         <p>{{.Description}}</p>
       </div>
-      <img class="w3-half" src="{{(index .Images 0).Path}}" style="max-height:250px" width="100%" title="" alt="" />
+      <img class="w3-half" src="{{if .Images}}{{(index .Images 0).Path}}{{end}}" style="max-height:250px" width="100%" title="" alt="" />
     </div>
     {{end}}
   </div>

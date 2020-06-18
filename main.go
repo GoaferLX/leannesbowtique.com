@@ -102,9 +102,12 @@ func main() {
 	r.HandleFunc("/product/category/{id:[0-9]+}", authMW.AllowFunc(categoryController.Update)).Methods("POST")
 	r.HandleFunc("/product/category/{id:[0-9]+}", authMW.AllowFunc(categoryController.Delete)).Methods("GET")
 
-	r.HandleFunc("/bundle/view", bundlesController.ViewBundle).Methods("GET")
+	r.HandleFunc("/bundle/{id:[0-9]+}", bundlesController.ViewBundle).Methods("GET")
 	r.HandleFunc("/bundles/view", bundlesController.ViewBundles).Methods("GET")
 	r.HandleFunc("/bundle/new", bundlesController.NewBundle).Methods("GET")
+	r.HandleFunc("/bundle/new", bundlesController.Create).Methods("POST")
+	r.HandleFunc("/bundle/{id:[0-9]+}/edit", bundlesController.Edit).Methods("GET")
+	r.HandleFunc("/bundle/{id:[0-9]+}/edit", bundlesController.Update).Methods("POST")
 
 	log.Printf("Server listening on port: %d", cfg.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfmw(userMW.Allow(r))))
