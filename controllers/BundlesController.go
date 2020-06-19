@@ -60,8 +60,21 @@ func (bc BundlesController) NewBundle(w http.ResponseWriter, r *http.Request) {
 // Redirects to bundle page on success, redisplays page on failure
 func (bc BundlesController) Create(w http.ResponseWriter, r *http.Request) {
 	var yield views.Page
+	data := struct {
+		Bundle   models.Bundle
+		Products []models.Product
+	}{}
+	yield.PageData = &data
+	var products []models.Product
+
+	err := bc.BundleService.GetProducts(&products)
+	if err != nil {
+		yield.SetAlert(err)
+		bc.NewBundleView.RenderTemplate(w, r, yield)
+		return
+	}
+	data.Products = products
 	var form BundlesForm
-	yield.PageData = &form
 
 	if err := parsePostForm(r, &form); err != nil {
 		yield.SetAlert(err)
