@@ -37,6 +37,7 @@ type ProductDB interface {
 	GetCategories() ([]Category, error)
 	GetByID(id int) (*Product, error)
 	GetProducts(opts *ProductOpts) ([]*Product, error)
+	GetBundles() ([]*Bundle, error)
 }
 type productModel struct {
 	ProductDB
@@ -175,4 +176,10 @@ func (pv *productValidator) Delete(id int) error {
 func (dbm *productDB) Delete(id int) error {
 	product := &Product{ID: id}
 	return dbm.gorm.Delete(product).Error
+}
+
+func (dbm productDB) GetBundles() ([]*Bundle, error) {
+	var bundles []*Bundle
+	err := dbm.gorm.Preload("Products").Find(&bundles).Error
+	return bundles, err
 }
