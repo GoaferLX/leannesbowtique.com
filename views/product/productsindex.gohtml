@@ -85,13 +85,10 @@
   <div class="w3-border w3-row w3-round">
     {{range .}}
     <div class="mySlides w3-animate-top w3-container w3-col s12 m12 l6 w3-animate-opacity ">
-      <div class="w3-display-container">
         <a href="/bundle/{{.ID}}" class="w3-hover-opacity">
-        <h2 class="w3-display-topleft w3-text-theme">{{.Name}}</h2>
-
         <img src="{{if .Images}}{{(index .Images 0).Path}}{{end}}" style="max-height:200px" width="100%" title="{{.Name}}" alt="Image coming soon!" />
       </a>
-      </div>
+
     </div>
     {{end}}
   </div>
