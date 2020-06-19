@@ -1,4 +1,8 @@
 {{define "content" }}
+{{if .Bundles}}
+{{template "slideshow" .Bundles}}
+{{end}}
+{{block "products" .}}
 <section class="w3-section w3-card-4 w3-round w3-white">
   <header class="w3-theme w3-round w3-container">
     <h3>Gallery</h3>
@@ -73,4 +77,44 @@
 
 
 </section>
+{{end}}
+{{end}}
+
+{{define "slideshow"}}
+<section class="w3-section">
+  <div class="w3-border w3-row w3-round">
+    {{range .}}
+    <div class="mySlides w3-animate-top w3-container w3-col s12 m12 l6 w3-animate-opacity ">
+      <div class="w3-display-container">
+        <a href="/bundle/{{.ID}}" class="w3-hover-opacity">
+        <h2 class="w3-display-topleft w3-text-theme">{{.Name}}</h2>
+
+        <img src="{{if .Images}}{{(index .Images 0).Path}}{{end}}" style="max-height:200px" width="100%" title="{{.Name}}" alt="Image coming soon!" />
+      </a>
+      </div>
+    </div>
+    {{end}}
+  </div>
+</section>
+
+<script>
+var slideIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  slideIndex++;
+  if (slideIndex >= x.length) {slideIndex = 1}
+  x[slideIndex-1].style.display = "block";
+if (document.documentElement.clientWidth > 993) {
+    x[slideIndex].style.display = "block";
+  }
+
+  setTimeout(carousel, 4000);
+}
+</script>
 {{end}}

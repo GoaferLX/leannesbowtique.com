@@ -1,14 +1,17 @@
 {{define "content"}}
 <section class="w3-section w3-round w3-card-4 w3-white">
-  <h3 class="">New Bundle</h3>
+  <h3 class="">Edit Bundle</h3>
   <div class="">
-    {{template "newBundleForm" .}}
+    {{template "editBundleForm" .}}
+  </div>
+  <div>
+    {{template "uploadImageForm" .Bundle}}
   </div>
 </section>
 {{end}}
 
-{{define "newBundleForm"}}
-<form class="w3-panel" action="/bundle/new" method="POST">
+{{define "editBundleForm"}}
+<form class="w3-panel" action="/bundle/{{.Bundle.ID}}/edit" method="POST">
   {{csrfField}}
   <label for="name" id="name" class="w3-text-theme">Name:</label>
   <input name="name" class="w3-input" type="text" placeholder="Whats it called?" value="{{.Bundle.Name}}" />
@@ -27,6 +30,17 @@
     <input name="Products.{{.ID}}.ID" id="Products.{{.ID}}.ID" class="w3-check"  value="{{.ID}}" type="checkbox">{{.Name}}<br />
     {{end}}
 
-  <input class="w3-button w3-theme-action" type="submit" value="Add!" />
+  <input class="w3-button w3-theme-action" type="submit" value="Edit!" />
+</form>
+{{end}}
+
+{{define "uploadImageForm"}}
+<form class="w3-panel" action="/bundle/{{.ID}}/uploadimage" multiple="multiple" method="POST" enctype="multipart/form-data">
+  {{csrfField}}
+    <label for="images" class="w3-text-theme">Add Images:</label>
+    <input name="images" id="images" class="w3-input" type="file" multiple="multiple" />
+
+    <p>Please only use jpg, jpeg, and png.</p>
+    <input class="w3-button w3-theme-action" type="submit" value="Upload!" />
 </form>
 {{end}}

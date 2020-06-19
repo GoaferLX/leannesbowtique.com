@@ -1,33 +1,33 @@
-{{define "content"}}
-<section class="w3-section">
-  <div class="w3-container w3-border">
+{{define "content" }}
+
+<section class="w3-section w3-card-4 w3-round w3-white">
+  <header class="w3-theme w3-round w3-container">
+    <h3>Bundles</h3>
+  </header>
+  {{if .}}
+  <div class="w3-container">
+    <p>Browse our gallery of pre-made bow collections.</p>
+    <p>Click on any bundle for more information!</p>
+  </div>
+  <div class="w3-row w3-container">
     {{range .}}
-    <div class="mySlides w3-container w3-animate-opacity">
-      <div class="w3-half">
-        <h3>{{.Name}}</h3>
-        <h4>{{.Price}}</h4>
-        <p>{{.Description}}</p>
-      </div>
-      <img class="w3-half" src="{{(index .Images 0).Path}}" style="max-height:250px" width="100%" title="" alt="" />
+    <div class="w3-col s12 m6 w3-panel w3-mobile">
+      <a href="/bundle/{{.ID}}" class="w3-col w3-card-4 w3-button">
+        <img src="{{if .Images}}{{(index .Images 0).Path}}{{else}}/imgs/imagecomingsoon.png{{end}}" title="{{.Name}}" alt="Image coming soon!" width="100%;"  style="max-height:300px;">
+        <div class="w3-container ">
+          <h2 class="w3-text-theme">{{.Name}}</h2>
+          <span class="w3-opacity">£{{printf "%.2f" .Price}}</span>
+        </div>
+      </a>
     </div>
     {{end}}
   </div>
+
+  {{else}}
+  <div class="w3-row w3-container w3-large">
+    <p>This page is empty at the moment.  Please come back and look soon whilst we work on getting you some things to look at.</p>
+  </div>
+  {{end}}
+
 </section>
-
-<script>
-var slideIndex = 0;
-carousel();
-
-function carousel() {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  slideIndex++;
-  if (slideIndex > x.length) {slideIndex = 1}
-  x[slideIndex-1].style.display = "block";
-  setTimeout(carousel, 4000);
-}
-</script>
 {{end}}

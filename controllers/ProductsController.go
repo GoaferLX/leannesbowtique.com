@@ -76,7 +76,6 @@ func (pc ProductsController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	data.Categories = cats
 
-	fmt.Println(yield)
 	if err := parsePostForm(r, &form); err != nil {
 		yield.SetAlert(err)
 		pc.CreateView.RenderTemplate(w, r, yield)
@@ -187,10 +186,24 @@ func (p ProductOptsForm) PageDown() string {
 func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Request) {
 	yield := views.Page{}
 	data := struct {
+		Bundles    []*models.Bundle
 		Products   []*models.Product
 		Categories []models.Category
 		Form       *ProductOptsForm
 	}{}
+	bundles, err := pc.productService.GetBundles()
+	//[]*Bundle
+	if err != nil {
+		yield.SetAlert(err)
+		pc.productsView.RenderTemplate(w, r, yield)
+		return
+	}
+	is := models.NewImageService("bundles")
+	for _, bundle := range bundles {
+		images, _ := is.GetByEntityID(bundle.ID)
+		bundle.Images = images
+	}
+	data.Bundles = bundles
 	yield.PageData = &data
 	var form ProductOptsForm = ProductOptsForm{PageNum: 1, Limit: 6, Sort: 3}
 	data.Form = &form
