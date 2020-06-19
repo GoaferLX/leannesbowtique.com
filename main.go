@@ -103,11 +103,11 @@ func main() {
 	r.HandleFunc("/product/category/{id:[0-9]+}", authMW.AllowFunc(categoryController.Delete)).Methods("GET")
 
 	r.HandleFunc("/bundle/{id:[0-9]+}", bundlesController.ViewBundle).Methods("GET")
-	r.HandleFunc("/bundle/new", bundlesController.NewBundle).Methods("GET")
-	r.HandleFunc("/bundle/new", bundlesController.Create).Methods("POST")
-	r.HandleFunc("/bundle/{id:[0-9]+}/edit", bundlesController.Edit).Methods("GET")
-	r.HandleFunc("/bundle/{id:[0-9]+}/edit", bundlesController.Update).Methods("POST")
-	r.HandleFunc("/bundle/{id:[0-9]+}/uploadimage", bundlesController.ImageUpload).Methods("POST")
+	r.HandleFunc("/bundle/new", authMW.AllowFunc(bundlesController.NewBundle)).Methods("GET")
+	r.HandleFunc("/bundle/new", authMW.AllowFunc(bundlesController.Create)).Methods("POST")
+	r.HandleFunc("/bundle/{id:[0-9]+}/edit", authMW.AllowFunc(bundlesController.Edit)).Methods("GET")
+	r.HandleFunc("/bundle/{id:[0-9]+}/edit", authMW.AllowFunc(bundlesController.Update)).Methods("POST")
+	r.HandleFunc("/bundle/{id:[0-9]+}/uploadimage", authMW.AllowFunc(bundlesController.ImageUpload)).Methods("POST")
 	r.HandleFunc("/bundles", bundlesController.ViewBundles).Methods("GET")
 
 	log.Printf("Server listening on port: %d", cfg.Port)
