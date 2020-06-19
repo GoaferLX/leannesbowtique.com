@@ -81,10 +81,10 @@
 {{end}}
 
 {{define "slideshow"}}
-<section class="w3-section">
+<section class="w3-section w3-round">
   <div class="w3-border w3-row w3-round">
     {{range .}}
-    <div class="mySlides w3-animate-top w3-container w3-col s12 m12 l6 w3-animate-opacity ">
+    <div class="mySlides w3-animate-top w3-container w3-col s12 m12 l6 w3-animate-zoom ">
         <a href="/bundle/{{.ID}}" class="w3-hover-opacity">
         <img src="{{if .Images}}{{(index .Images 0).Path}}{{end}}" style="max-height:200px" width="100%" title="{{.Name}}" alt="Image coming soon!" />
       </a>
