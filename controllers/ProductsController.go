@@ -98,7 +98,7 @@ func (pc ProductsController) Create(w http.ResponseWriter, r *http.Request) {
 
 func (pc *ProductsController) ViewProductsIndex(w http.ResponseWriter, r *http.Request) {
 	yield := views.Page{}
-	opts := &models.ProductOpts{}
+	opts := &models.SearchOpts{}
 	products, err := pc.productService.GetProducts(opts)
 	if err != nil {
 		yield.SetAlert(err)
@@ -218,9 +218,8 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 	}
 	offset := ((form.PageNum) * form.Limit) - form.Limit
 
-	opts := &models.ProductOpts{CategoryID: form.CategoryID, Limit: form.Limit, Sort: form.Sort, Offset: offset}
+	opts := &models.SearchOpts{CategoryID: form.CategoryID, Limit: form.Limit, Sort: form.Sort, Offset: offset, Search: form.Search}
 	products, err := pc.productService.GetProducts(opts)
-	fmt.Println(opts.Total)
 	form.Total = int(math.Ceil(float64(opts.Total) / float64(opts.Limit)))
 
 	data.Products = products
