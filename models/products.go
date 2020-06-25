@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"regexp"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -20,12 +21,14 @@ type Product struct {
 	DeletedAt   *time.Time
 }
 
-// Defines API for interacting with a product
+// Defines API for interacting with products
 type ProductService interface {
 	ProductDB
+	ProductsDB
 }
 
 // Defines all database interactions for a single product
+// Expected return ono query is *Product (*sql.Row)
 type ProductDB interface {
 	// Operations for updating database
 	// Create/Update/Delete
@@ -36,16 +39,42 @@ type ProductDB interface {
 	// Read
 	GetCategories() ([]Category, error)
 	GetByID(id int) (*Product, error)
-	GetProducts(opts *ProductOpts) ([]*Product, error)
+	//GetProducts(opts *ProductOpts) ([]*Product, error)
 	GetBundles() ([]*Bundle, error)
 }
+
+// Defines all database interactions for a slice of products
+// Expected return ono query is []*Product (*sql.Rows)
+type ProductsDB interface {
+	GetProducts(opts *SearchOpts) ([]*Product, error)
+}
+
 type productModel struct {
 	ProductDB
+	ProductsDB
 }
 type productValidator struct {
 	ProductDB
 }
 type productDB struct {
+	gorm *gorm.DB
+}
+
+type SearchOpts struct {
+	Limit      int
+	Search     string
+	Sort       int
+	Offset     int
+	CategoryID int
+	Total      int
+}
+
+type searchValidator struct {
+	searchRegex *regexp.Regexp
+	ProductsDB
+}
+
+type searchDB struct {
 	gorm *gorm.DB
 }
 
@@ -56,9 +85,65 @@ func NewProductService(db *gorm.DB) ProductService {
 				gorm: db,
 			},
 		},
+		ProductsDB: &searchValidator{
+			searchRegex: regexp.MustCompile(`^[a-z0-9.]`),
+			ProductsDB: &searchDB{
+				gorm: db,
+			},
+		},
 	}
+
 }
 
+func (sv *searchValidator) GetProducts(opts *SearchOpts) ([]*Product, error) {
+	/*
+		catError := errors.New("Not a valid category")
+		if !sv.catRegex.MatchString(opts.CategoryID) && opts.CategoryID != "" {
+			return nil, catError
+		}
+	*/
+	searchError := errors.New("Not a search")
+	if !sv.searchRegex.MatchString(opts.Search) && opts.Search != "" {
+		return nil, searchError
+	}
+	if opts.Limit == 0 || opts.Limit < -1 {
+		opts.Limit = -1
+	}
+	if opts.Sort < 1 || opts.Sort > 4 {
+		opts.Sort = 0
+	}
+
+	return sv.ProductsDB.GetProducts(opts)
+}
+func (sdb *searchDB) GetProducts(opts *SearchOpts) ([]*Product, error) {
+	var products []*Product
+	var err error
+	var order string
+	switch opts.Sort {
+	case 1:
+		order = "created_at desc"
+	case 2:
+		order = "created_at asc"
+	case 3:
+		order = "price desc"
+	case 4:
+		order = "price asc"
+	default:
+		order = "id asc"
+	}
+	if opts.CategoryID != 0 {
+		//
+		err = sdb.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("name LIKE ? AND category_id = ?", "%"+opts.Search+"%", opts.CategoryID).Or("description LIKE ? AND category_id = ?", "%"+opts.Search+"%", opts.CategoryID).Order(order).Offset(opts.Offset).Limit(opts.Limit).Find(&products).Error
+		sdb.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id = ? AND name LIKE ? AND products.deleted_at IS NULL", opts.CategoryID, "%"+opts.Search+"%").Or("category_id = ? AND description LIKE ? AND products.deleted_at IS NULL", opts.CategoryID, "%"+opts.Search+"%").Order(order).Table("products").Count(&opts.Total)
+	} else {
+		err = sdb.gorm.Preload("Categories").Where("name LIKE ?", "%"+opts.Search+"%").Or("description LIKE ?", "%"+opts.Search+"%").Order(order).Limit(opts.Limit).Offset(opts.Offset).Find(&products).Error
+		sdb.gorm.Table("products").Where("deleted_at IS NULL AND name LIKE ?", "%"+opts.Search+"%").Or("deleted_at IS NULL AND name LIKE ?", "%"+opts.Search+"%").Count(&opts.Total)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
+}
 func (pv *productValidator) Create(product *Product) error {
 	if err := Validate(product.Name, isRequired); err != nil {
 		return err
@@ -98,61 +183,6 @@ func (dbm *productDB) GetByID(id int) (*Product, error) {
 	return &product, nil
 }
 
-type ProductOpts struct {
-	Limit      int
-	Search     string
-	CategoryID int
-	Sort       int
-	Offset     int
-	Total      int
-}
-
-func (pv *productValidator) GetProducts(opts *ProductOpts) ([]*Product, error) {
-	/*
-		catError := errors.New("Not a valid category")
-		catRegex := regexp.MustCompile(`^[0-9]+`)
-		if !catRegex.MatchString(opts.CategoryID) && opts.CategoryID != "" {
-			return nil, catError
-		}
-	*/
-	if opts.Limit == 0 || opts.Limit < -1 {
-		opts.Limit = -1
-	}
-	if opts.Sort < 1 || opts.Sort > 4 {
-		opts.Sort = 0
-	}
-
-	return pv.ProductDB.GetProducts(opts)
-}
-
-func (dbm *productDB) GetProducts(opts *ProductOpts) ([]*Product, error) {
-	var products []*Product
-	var err error
-	var order string
-	switch opts.Sort {
-	case 1:
-		order = "created_at desc"
-	case 2:
-		order = "created_at asc"
-	case 3:
-		order = "price desc"
-	case 4:
-		order = "price asc"
-	default:
-		order = "id asc"
-	}
-	if opts.CategoryID != 0 {
-		err = dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id =?", opts.CategoryID).Order(order).Offset(opts.Offset).Limit(opts.Limit).Find(&products).Error
-		dbm.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id = ? AND products.deleted_at IS NULL", opts.CategoryID).Order(order).Table("products").Count(&opts.Total)
-	} else {
-		err = dbm.gorm.Preload("Categories").Order(order).Limit(opts.Limit).Offset(opts.Offset).Find(&products).Error
-		dbm.gorm.Table("products").Where("deleted_at IS NULL").Count(&opts.Total)
-	}
-	if err != nil {
-		return nil, err
-	}
-	return products, nil
-}
 func (pv *productValidator) Update(product *Product) error {
 	var ret []Category
 	for _, cat := range product.Categories {
