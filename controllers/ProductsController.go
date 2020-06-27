@@ -205,7 +205,7 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 	}
 	data.Bundles = bundles
 	yield.PageData = &data
-	var form ProductOptsForm = ProductOptsForm{PageNum: 1, Limit: 6, Sort: 3}
+	var form ProductOptsForm = ProductOptsForm{CategoryID: 0, PageNum: 1, Limit: 6, Sort: 3}
 	data.Form = &form
 	if err := parseGetForm(r, &form); err != nil {
 		fmt.Println(err)

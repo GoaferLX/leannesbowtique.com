@@ -129,12 +129,11 @@ func (sdb *searchDB) GetProducts(opts *SearchOpts) ([]*Product, error) {
 		order = "id asc"
 	}
 	if opts.CategoryID != 0 {
-		//
 		err = sdb.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("name LIKE ? AND category_id = ?", "%"+opts.Search+"%", opts.CategoryID).Or("description LIKE ? AND category_id = ?", "%"+opts.Search+"%", opts.CategoryID).Order(order).Offset(opts.Offset).Limit(opts.Limit).Find(&products).Error
 		sdb.gorm.Joins("INNER JOIN product_categories on product_categories.product_id = products.id").Preload("Categories").Where("category_id = ? AND name LIKE ? AND products.deleted_at IS NULL", opts.CategoryID, "%"+opts.Search+"%").Or("category_id = ? AND description LIKE ? AND products.deleted_at IS NULL", opts.CategoryID, "%"+opts.Search+"%").Order(order).Table("products").Count(&opts.Total)
 	} else {
 		err = sdb.gorm.Preload("Categories").Where("name LIKE ?", "%"+opts.Search+"%").Or("description LIKE ?", "%"+opts.Search+"%").Order(order).Limit(opts.Limit).Offset(opts.Offset).Find(&products).Error
-		sdb.gorm.Table("products").Where("deleted_at IS NULL AND name LIKE ?", "%"+opts.Search+"%").Or("deleted_at IS NULL AND name LIKE ?", "%"+opts.Search+"%").Count(&opts.Total)
+		sdb.gorm.Where("deleted_at IS NULL AND name LIKE ?", "%"+opts.Search+"%").Or("deleted_at IS NULL AND name LIKE ?", "%"+opts.Search+"%").Table("products").Count(&opts.Total)
 	}
 	if err != nil {
 		return nil, err
