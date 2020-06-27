@@ -222,16 +222,11 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 	products, err := pc.productService.GetProducts(opts)
 	if err != nil {
 		yield.SetAlert(err)
-		pc.productView.RenderTemplate(w, r, yield)
+		pc.productsView.RenderTemplate(w, r, yield)
 		return
 	}
 	form.Total = int(math.Ceil(float64(opts.Total) / float64(opts.Limit)))
 	data.Products = products
-	if err != nil {
-		yield.SetAlert(err)
-		pc.productView.RenderTemplate(w, r, yield)
-		return
-	}
 
 	// Attach images to each product
 	for _, product := range products {
