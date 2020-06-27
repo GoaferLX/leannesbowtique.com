@@ -86,7 +86,7 @@ func NewProductService(db *gorm.DB) ProductService {
 			},
 		},
 		ProductsDB: &searchValidator{
-			searchRegex: regexp.MustCompile(`^[a-z0-9.]`),
+			searchRegex: regexp.MustCompile(`^[A-Za-z0-9 !?.,]`),
 			ProductsDB: &searchDB{
 				gorm: db,
 			},
