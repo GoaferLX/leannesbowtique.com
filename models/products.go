@@ -96,12 +96,9 @@ func NewProductService(db *gorm.DB) ProductService {
 }
 
 func (sv *searchValidator) GetProducts(opts *SearchOpts) ([]*Product, error) {
-	/*
-		catError := errors.New("Not a valid category")
-		if !sv.catRegex.MatchString(opts.CategoryID) && opts.CategoryID != "" {
-			return nil, catError
-		}
-	*/
+	if opts.CategoryID < 1 {
+		opts.CategoryID = 0
+	}
 	searchError := errors.New("Not valid search criteria...")
 	if !sv.searchRegex.MatchString(opts.Search) && opts.Search != "" {
 		return nil, searchError
