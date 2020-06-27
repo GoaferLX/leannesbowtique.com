@@ -102,7 +102,7 @@ func (sv *searchValidator) GetProducts(opts *SearchOpts) ([]*Product, error) {
 			return nil, catError
 		}
 	*/
-	searchError := errors.New("Not a search")
+	searchError := errors.New("Not valid search criteria...")
 	if !sv.searchRegex.MatchString(opts.Search) && opts.Search != "" {
 		return nil, searchError
 	}
