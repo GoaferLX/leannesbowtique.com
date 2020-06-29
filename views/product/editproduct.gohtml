@@ -26,11 +26,11 @@
     <input name="price" id="price" class="w3-input" type="text" placeholder="What does it cost?" value="{{printf "%.2f" .Product.Price}}" />
 
     <label for="categories" class="w3-text-theme">Category:</label><br />
-      {{range .Categories}}
+      {{range $cat := .Categories}}
       <label>{{.Name}}</label>
-      <input name="categories.{{.ID}}.ID" id="categories.{{.ID}}.ID" class="w3-check" value="{{.ID}}" type="checkbox">
+      <input name="categories.{{.ID}}.ID" id="categories.{{.ID}}.ID" class="w3-check" value="{{.ID}}" type="checkbox"{{range $prodcat := $.Product.Categories}}{{if eq $cat.ID $prodcat.ID}} checked="checked"{{end}}{{end}}>
       {{end}}
-    </select>
+  
     <br />
     <input class="w3-button w3-theme-action" type="submit" value="Update!" />
 </form>

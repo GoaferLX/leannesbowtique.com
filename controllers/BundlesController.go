@@ -125,7 +125,7 @@ func (bc *BundlesController) Edit(w http.ResponseWriter, r *http.Request) {
 	err := bc.BundleService.GetProducts(&products)
 	if err != nil {
 		yield.SetAlert(err)
-		bc.NewBundleView.RenderTemplate(w, r, yield)
+		bc.EditBundleView.RenderTemplate(w, r, yield)
 		return
 	}
 	data.Products = products
@@ -138,11 +138,12 @@ func (bc *BundlesController) Edit(w http.ResponseWriter, r *http.Request) {
 func (bc BundlesController) Update(w http.ResponseWriter, r *http.Request) {
 	var yield views.Page
 	var form BundlesForm
-	yield.PageData = &form
+
 	bundle := bc.GetByID(w, r)
+	yield.PageData = bundle
 	if err := parsePostForm(r, &form); err != nil {
 		yield.SetAlert(err)
-		bc.NewBundleView.RenderTemplate(w, r, yield)
+		bc.EditBundleView.RenderTemplate(w, r, yield)
 		return
 	}
 
@@ -153,7 +154,7 @@ func (bc BundlesController) Update(w http.ResponseWriter, r *http.Request) {
 
 	if err := bc.BundleService.Update(bundle); err != nil {
 		yield.SetAlert(err)
-		bc.NewBundleView.RenderTemplate(w, r, yield)
+		bc.EditBundleView.RenderTemplate(w, r, yield)
 		return
 	}
 	url := fmt.Sprintf("/bundle/%d/edit", bundle.ID)

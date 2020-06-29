@@ -25,9 +25,11 @@
   <input name="price" id="price" class="w3-input" type="text" placeholder="What does it cost?" value="{{printf "%.2f" .Bundle.Price}}" />
 
   <br />
+  <label for="products" class="w3-text-theme">Products:</label><br />
+    {{range $prod := .Products}}
 
-    {{range .Products}}
-    <input name="Products.{{.ID}}.ID" id="Products.{{.ID}}.ID" class="w3-check"  value="{{.ID}}" type="checkbox">{{.Name}}<br />
+    <input name="Products.{{.ID}}.ID" id="Products.{{.ID}}.ID" class="w3-check"  value="{{.ID}}" type="checkbox"{{range $bundleprod := $.Bundle.Products}}{{if eq $prod.ID $bundleprod.ID}} checked="checked"{{end}}{{end}}>
+<label>{{.Name}}</label><br />
     {{end}}
 
   <input class="w3-button w3-theme-action" type="submit" value="Edit!" />

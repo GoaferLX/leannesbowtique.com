@@ -46,8 +46,10 @@ type bundleDB struct {
 
 func NewBundleService(db *gorm.DB) BundleService {
 	return &bundleModel{
-		BundleDB: bundleDB{
-			gorm: db,
+		BundleDB: &bundleValidator{
+			BundleDB: bundleDB{
+				gorm: db,
+			},
 		},
 	}
 }
@@ -110,6 +112,7 @@ func (bv *bundleValidator) Update(b *Bundle) error {
 }
 
 func (dbm bundleDB) Update(b *Bundle) error {
+	dbm.gorm.Set("gorm:association_autoupdate", false).Set("gorm:association_autocreate", false).Model(&b).Association("products").Replace(b.Products)
 	return dbm.gorm.Save(b).Error
 }
 
