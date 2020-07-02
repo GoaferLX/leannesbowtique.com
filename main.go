@@ -34,6 +34,7 @@ func main() {
 		models.WithCategories(),
 		//	models.WithImages(),
 		models.WithBundles(),
+		models.WithCart(),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -46,10 +47,13 @@ func main() {
 	productsController := controllers.NewProductsController(services.ProductService, models.NewImageService("products"))
 	categoryController := controllers.NewCategories(services.CategoryService)
 	bundlesController := controllers.NewBundlesController(services.BundleService)
+	cartController := controllers.NewCartController(services.CartService)
 
 	// Inititate middlewares
 	userMW := middleware.User{UserModel: services.UserService}
 	authMW := middleware.RequireUser{}
+	cartMW := middleware.CartMW{services.CartService}
+
 	csrfbytes, err := rand.Bytes(32)
 	if err != nil {
 		log.Fatal(err)
@@ -110,7 +114,9 @@ func main() {
 	r.HandleFunc("/bundle/{id:[0-9]+}/uploadimage", authMW.AllowFunc(bundlesController.ImageUpload)).Methods("POST")
 	r.HandleFunc("/bundles", bundlesController.ViewBundles).Methods("GET")
 
+	r.HandleFunc("/cart", cartController.ViewCart)
+
 	log.Printf("Server listening on port: %d", cfg.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfmw(userMW.Allow(r))))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfmw(userMW.Allow(cartMW.CheckCart((r))))))
 
 }

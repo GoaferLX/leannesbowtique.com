@@ -15,6 +15,7 @@ type Services struct {
 	CategoryService CategoryService
 	ImageService    ImageService
 	BundleService   BundleService
+	CartService     CartService
 }
 type serviceOpts func(*Services) error
 
@@ -91,7 +92,15 @@ func WithBundles() serviceOpts {
 	}
 }
 
+// Loads user service, allows user functionality as defined by UserInterface//
+func WithCart() serviceOpts {
+	return func(services *Services) error {
+		services.CartService = NewCartService(services.gorm)
+		return nil
+	}
+}
+
 // a Wrapper for gorms AutoMigrate function
 func (s *Services) AutoMigrate() error {
-	return s.gorm.AutoMigrate(&User{}, &Product{}, &Category{}, &Article{}, &pwReset{}, &Bundle{}).Error
+	return s.gorm.AutoMigrate(&User{}, &Product{}, &Category{}, &Article{}, &pwReset{}, &Bundle{}, &Cart{}).Error
 }
