@@ -36,6 +36,7 @@ func (cmw CartMW) CheckCartFunc(next http.HandlerFunc) http.HandlerFunc {
 		cart, err := cmw.CartService.GetCart(1)
 		if err != nil {
 			fmt.Println(err)
+			// TODO: Create new cart if err?
 			next(w, r)
 			return
 		}

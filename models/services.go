@@ -102,5 +102,5 @@ func WithCart() serviceOpts {
 
 // a Wrapper for gorms AutoMigrate function
 func (s *Services) AutoMigrate() error {
-	return s.gorm.AutoMigrate(&User{}, &Product{}, &Category{}, &Article{}, &pwReset{}, &Bundle{}, &Cart{}).Error
+	return s.gorm.AutoMigrate(&User{}, &Product{}, &Category{}, &Article{}, &pwReset{}, &Bundle{}, &Cart{}, &CartItem{}).Error
 }

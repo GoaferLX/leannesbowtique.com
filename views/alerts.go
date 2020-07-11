@@ -12,6 +12,7 @@ type Page struct {
 	Alert    *Alert
 	PageData interface{}
 	User     *models.User
+	Cart     *models.Cart
 }
 
 type Alert struct {

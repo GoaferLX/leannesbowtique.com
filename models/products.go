@@ -10,7 +10,7 @@ import (
 
 // Product represents a single product stored in the database
 type Product struct {
-	ID          int
+	ID          int    `gorm:"primary_key;"`
 	Name        string `gorm:"not_null"`
 	Description string
 	Categories  []Category `gorm:"many2many:product_categories;association_autocreate:false;association_autoupdate:false;"`

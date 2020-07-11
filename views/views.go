@@ -77,6 +77,11 @@ func (v *View) RenderTemplate(w http.ResponseWriter, r *http.Request, data inter
 	if ok {
 		yield.User = user
 	}
+	cartctx := r.Context().Value("cart")
+	cart, ok := cartctx.(*models.Cart)
+	if ok {
+		yield.Cart = cart
+	}
 
 	err := tpl.ExecuteTemplate(&buffer, v.LayoutFile, yield)
 	if err != nil {

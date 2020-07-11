@@ -48,6 +48,14 @@
       </main>
       <!-- Social (Right Column) -->
       <aside class="w3-rest w3-row w3-container">
+        {{if .Cart}}
+        <div class="w3-section">
+          <header class="w3-container w3-round w3-theme">
+            <h3 class="">Your Cart</h3>
+          </header>
+          {{template "cart" .Cart}}
+        </div>
+        {{end}}
         <div class="w3-section">
           <header class="w3-container w3-round w3-theme">
             <h3 class="">Find us on social media!</h3>
