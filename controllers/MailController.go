@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"time"
 
+	"leannesbowtique.com/models"
 	"leannesbowtique.com/views"
 
 	"github.com/mailgun/mailgun-go"
@@ -114,3 +115,31 @@ func (mc *MailController) ResetPw(toEmail, token string) error {
 	}
 	return nil
 }
+
+func (mc *MailController) Order(email string, cart *models.Cart) error {
+
+	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,16}$`)
+	if !emailRegex.MatchString(email) {
+		return errors.New("Please check your email address is valid")
+	}
+	orderConfirm := fmt.Sprintf(orderConfirmTMPL, cart.Total())
+	message := mc.mg.NewMessage("support@leannesbowtique.com", "Your Order", orderConfirm, email)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
+	_, _, err := mc.mg.Send(ctx, message)
+	if err != nil {
+		return fmt.Errorf("Mailgun Error, could not send: %w", err)
+	}
+	return nil
+}
+
+const orderConfirmTMPL = `Hi there!
+
+Thank you for ordering with Leannes Bowtique!
+Your order for %.2f has been submitted!
+
+We will be in touch to confirm the order and provide payment details.
+The order will be shipped upon successful payment.
+
+All the best,
+Leanne @ Leanne's Bowtique`

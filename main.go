@@ -47,7 +47,7 @@ func main() {
 	productsController := controllers.NewProductsController(services.ProductService, models.NewImageService("products"))
 	categoryController := controllers.NewCategories(services.CategoryService)
 	bundlesController := controllers.NewBundlesController(services.BundleService)
-	cartController := controllers.NewCartController(services.CartService)
+	cartController := controllers.NewCartController(services.CartService, mailController)
 
 	// Inititate middlewares
 	userMW := middleware.User{UserModel: services.UserService}
@@ -115,7 +115,11 @@ func main() {
 	r.HandleFunc("/bundles", bundlesController.ViewBundles).Methods("GET")
 
 	r.HandleFunc("/cart", cartController.ViewCart)
-
+	r.HandleFunc("/cart/add", cartController.AddToCart).Queries("productid", "{id:[0-9]+}")
+	r.HandleFunc("/cart/delete", cartController.DeleteItem)
+	r.HandleFunc("/cart/empty", cartController.Empty)
+	r.HandleFunc("/cart/order", cartController.Order).Methods("GET")
+	r.HandleFunc("/cart/order", cartController.ConfirmOrder).Methods("POST")
 	log.Printf("Server listening on port: %d", cfg.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfmw(userMW.Allow(cartMW.CheckCart((r))))))
 

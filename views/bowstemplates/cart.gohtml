@@ -1,24 +1,30 @@
 {{define "cart"}}
 <div class="w3-container w3-card-4">
-<table>
+<table class="w3-table">
   {{if .Items}}
-  <tr style="text-align:left;">
+  <tr class="w3-left-align w3-text-theme">
     <th>Item</th><th>Quantity</th>
   </tr>
   {{range .Items}}
   <tr>
-    <td>{{.Product.Name}}</td><td>{{.Quantity}}</td><td>&times;</td>
+    <td>{{.Product.Name}}</td><td>{{.Quantity}}</td><td>{{template "removeitem" .}}</td>
   </tr>
   {{end}}
 
   <tr><td>Subtotal:</td><td> £{{printf "%.2f" .Subtotal}}</td></tr>
-  <tr><td>Delivery:</td><td> £{{printf "%.2f" .DeliveryCharge}}</td></tr>
-  <tr><td>Total:</td><td> £{{printf "%.2f" .Total}}</td></tr>
+
   {{else}}
   <tr><td>Your cart is empty</td></tr>
   {{end}}
 </table>
+<a href="/cart" class="w3-text-theme">Go to Cart</a>
 
 
 </div>
+{{end}}
+
+{{define "removeitem"}}
+<form name="cart" method="GET" action="/cart/delete">
+    <button name="productid" id="productid" class="w3-button" type="submit" value="{{.ProductID}}">&times;</button>
+</form>
 {{end}}

@@ -2,29 +2,41 @@
 <section class="w3-section">
 
 <div>
-<table>
-  <caption>Your Cart: {{.ID}}</caption>
+  <table>
+    <caption>Your Cart: {{.ID}}</caption>
 
-  {{if .Items}}
-  <tr>
-    <th>PID</th><th>Item</th><th>Price</th><th>Quantity</th>
-  </tr>
-  {{range .Items}}
-  <tr>
-    <td>{{.ProductID}}<td>{{.Product.Name}}</td><td>{{printf "%.2f" .Product.Price}}</td><td>{{.Quantity}}</td>
-  </tr>
-  {{end}}
+    {{if .Items}}
+    <tr>
+      <th>PID</th><th>Item</th><th>Price</th><th>Quantity</th>
+    </tr>
+    {{range .Items}}
+    <tr>
+      <td>{{.ProductID}}<td>{{.Product.Name}}</td><td>{{printf "%.2f" .Product.Price}}</td><td>{{.Quantity}}</td><td>{{template "removeitem" .}}</td>
+    </tr>
+    {{end}}
 
-  <tr><td>Subtotal: £{{printf "%.2f" .Subtotal}}</td></tr>
-  <tr><td>Delivery: £{{printf "%.2f" .DeliveryCharge}}</td></tr>
-  <tr><td>Total: £{{printf "%.2f" .Total}}</td></tr>
-  {{else}}
-  <tr><td>Your cart is empty</td></tr>
-  {{end}}
-</table>
-
-
+    <tr><td>Subtotal: £{{printf "%.2f" .Subtotal}}</td></tr>
+    <tr><td>Delivery: £{{printf "%.2f" .DeliveryCharge}}</td></tr>
+    <tr><td>Total: £{{printf "%.2f" .Total}}</td></tr>
+    {{else}}
+    <tr><td>Your cart is empty</td></tr>
+    {{end}}
+  </table>
+  <form name="cart" class="w3-panel" method="POST" action="/cart/order">
+    {{csrfField}}
+    <input name="order" id="order" class="w3-button w3-theme-action" type="submit" value="Order Now" />
+  </form>
+  <form name="cart" class="w3-panel" method="POST" action="/cart/empty">
+    {{csrfField}}
+    <input name="empty" id="empty" class="w3-button w3-theme-action" type="submit" value="Empty" />
+  </form>
 </div>
 
 </section>
+{{end}}
+
+{{define "removeitem"}}
+<form name="cart" method="GET" action="/cart/delete">
+    <button name="productid" id="productid" class="w3-button" type="submit" value="{{.ProductID}}">&times;</button>
+</form>
 {{end}}

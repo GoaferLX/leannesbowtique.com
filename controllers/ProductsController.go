@@ -205,7 +205,7 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 	}
 	data.Bundles = bundles
 	yield.PageData = &data
-	var form ProductOptsForm = ProductOptsForm{CategoryID: 0, PageNum: 1, Limit: 6, Sort: 3}
+	var form ProductOptsForm = ProductOptsForm{CategoryID: 0, PageNum: 1, Limit: 6, Sort: 1}
 	data.Form = &form
 	if err := parseGetForm(r, &form); err != nil {
 		fmt.Println(err)
@@ -214,7 +214,7 @@ func (pc *ProductsController) ViewProducts(w http.ResponseWriter, r *http.Reques
 		form.Limit = 6
 	}
 	if form.Sort < 1 || form.Sort > 4 {
-		form.Sort = 3
+		form.Sort = 1
 	}
 	offset := ((form.PageNum) * form.Limit) - form.Limit
 

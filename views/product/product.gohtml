@@ -37,7 +37,9 @@
     </p>
   </div>
   <div class="w3-col m3">
-    <button class="w3-theme-action w3-button">Add to basket</button>
+    <form name="cart" class="w3-panel" method="GET" action="/cart/add">
+      <button name="productid" id="productid" class="w3-button w3-theme-action" type="submit" value="{{.ID}}">Add to Basket</button>
+    </form>
   </div>
 </div>
 </section>
