@@ -50,7 +50,7 @@ func (mc *MailController) Contact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	msg := mc.mg.NewMessage(form.Email, form.Subject, form.Message, "Leannes Bowtique <leanne@leannesbowtique.com")
+	msg := mc.mg.NewMessage(form.Email, form.Subject, form.Message, "leanne@leannesbowtique.com")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 	_, _, err := mc.mg.Send(ctx, msg)
@@ -178,7 +178,7 @@ func (mc *MailController) Order(email string, cart *models.Cart) error {
 	if err := temp.Execute(&buffer, order); err != nil {
 		fmt.Println(err)
 	}
-	message := mc.mg.NewMessage(email, "New Order", buffer.String(), "Leannes Bowtique <leanne@leannesbowtique.com")
+	message := mc.mg.NewMessage(email, "New Order", buffer.String(), "leanne@leannesbowtique.com")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 	_, _, err = mc.mg.Send(ctx, message)
