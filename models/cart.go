@@ -166,6 +166,9 @@ func (db *cartDB) Delete(cart *Cart) error {
 }
 
 func (cs *cartService) PlaceOrder(cart *Cart, email string) error {
+	if len(cart.Items) == 0 {
+		return errors.New("Your cart is empty")
+	}
 	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,16}$`)
 	if !emailRegex.MatchString(email) {
 		return errors.New("Not a valid email address")

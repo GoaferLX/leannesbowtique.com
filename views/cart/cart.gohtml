@@ -29,7 +29,7 @@
       <tr><td>Your cart is empty</td></tr>
       {{end}}
     </table>
-    <form name="orderform" class="w3-panel" method="POST" action="cart">
+    <form name="orderform" class="w3-panel" method="POST" action="/cart">
       {{csrfField}}
       <label for="email" class="w3-text-theme"><b>Email:</b></label>
       <input name="email" id="email" class="w3-input" type="email" value="" placeholder="Your email address..." />
