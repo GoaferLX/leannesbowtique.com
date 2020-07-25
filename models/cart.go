@@ -1,7 +1,10 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -47,12 +50,13 @@ func (cart Cart) DeliveryCharge() float64 {
 
 type CartService interface {
 	CartDB
+	OrderService
 	NewCart() (*Cart, error)
 	AddItem(*Cart, Product) error
 	DeleteItem(*Cart, int) error
 	Empty(*Cart) error
 	AssignCookie(http.ResponseWriter, *Cart)
-	Order(*Cart) error
+	//Order(*Cart) error
 }
 
 type cartService struct {
@@ -71,6 +75,7 @@ func (cs *cartService) AssignCookie(w http.ResponseWriter, cart *Cart) {
 	cartCookie := http.Cookie{
 		Name:     "cartID",
 		Value:    cartid,
+		Expires:  time.Now().Add(7 * 24 * time.Hour),
 		Path:     "/",
 		HttpOnly: true,
 		//	Secure:   true,
@@ -160,8 +165,21 @@ func (db *cartDB) Delete(cart *Cart) error {
 	return nil
 }
 
-func (cs *cartService) Order(cart *Cart) error {
+func (cs *cartService) PlaceOrder(cart *Cart, email string) error {
+	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,16}$`)
+	if !emailRegex.MatchString(email) {
+		return errors.New("Not a valid email address")
+	}
 	cart.Ordered = true
-	return cs.CartDB.Update(cart)
-	//return cs.CartDB.Delete(cart)
+	if err := cs.CartDB.Update(cart); err != nil {
+		return fmt.Errorf("Could not place order: %w", err)
+	}
+	if err := cs.CartDB.Delete(cart); err != nil {
+		return fmt.Errorf("Could not place order: %w", err)
+	}
+	return nil
+}
+
+type OrderService interface {
+	PlaceOrder(*Cart, string) error
 }

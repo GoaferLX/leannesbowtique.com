@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"text/template"
 	"time"
 
 	"leannesbowtique.com/models"
@@ -116,14 +118,10 @@ func (mc *MailController) ResetPw(toEmail, token string) error {
 	return nil
 }
 
-func (mc *MailController) Order(email string, cart *models.Cart) error {
-
-	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,16}$`)
-	if !emailRegex.MatchString(email) {
-		return errors.New("Please check your email address is valid")
-	}
+func (mc *MailController) OrderConfirm(email string, cart *models.Cart) error {
 	orderConfirm := fmt.Sprintf(orderConfirmTMPL, cart.Total())
-	message := mc.mg.NewMessage("support@leannesbowtique.com", "Your Order", orderConfirm, email)
+	message := mc.mg.NewMessage("leanne@leannesbowtique.com", "Your Order", orderConfirm, email)
+	message.SetHtml(orderConfirm)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 	_, _, err := mc.mg.Send(ctx, message)
@@ -133,13 +131,59 @@ func (mc *MailController) Order(email string, cart *models.Cart) error {
 	return nil
 }
 
-const orderConfirmTMPL = `Hi there!
+const orderConfirmTMPL = `<p>Hi there!</p>
 
-Thank you for ordering with Leannes Bowtique!
-Your order for %.2f has been submitted!
+<p>Thank you for ordering with Leannes Bowtique!<br />
+Your order for £%.2f has been submitted!</p>
 
-We will be in touch to confirm the order and provide payment details.
-The order will be shipped upon successful payment.
+<p>We will be in touch to confirm the order and provide payment details.<br />
+The order will be shipped upon successful payment.</p>
 
-All the best,
-Leanne @ Leanne's Bowtique`
+<p>If you don't hear from us within 48 hours, please get in touch at <a href="mailto:leanne@leannesbowtique.com">
+leanne@leannesbowtique.com</a> to confirm the status of your order.</p>
+
+<p>All the best,<br />
+Leanne @ Leanne's Bowtique</p>
+
+<p>If you think you have received this email in error, please ignore it.  No need to panic.</p>`
+
+const orderTMPL = `You have a new order from {{.Email}}!
+
+Order Details:
+{{range .Cart.Items}}
+ID: {{.Product.ID}}
+Name: {{.Product.Name}}
+Description: {{.Product.Description}}
+Price: {{printf "%.2f"  .Product.Price}}
+Quantity: {{.Quantity}}
+{{end}}
+Total: {{printf "%.2f" .Cart.Total}}
+
+Proud of you babe xx`
+
+func (mc *MailController) Order(email string, cart *models.Cart) error {
+
+	temp, err := template.New("").Parse(orderTMPL)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var buffer bytes.Buffer
+	order := struct {
+		Email string
+		Cart  *models.Cart
+	}{
+		Email: email,
+		Cart:  cart,
+	}
+	if err := temp.Execute(&buffer, order); err != nil {
+		fmt.Println(err)
+	}
+	message := mc.mg.NewMessage(email, "New Order", buffer.String(), "leanne@leannesbowtique.com")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
+	_, _, err = mc.mg.Send(ctx, message)
+	if err != nil {
+		return fmt.Errorf("Mailgun Error, could not send: %w", err)
+	}
+	return nil
+}

@@ -11,11 +11,11 @@
     {{if .User}}
     <a href="/logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-hover-white w3-mobile"><i class="fas fa-lock w3-margin-right"></i>Logout</a>
     {{template "adminmenu" .User}}
-
     {{else}}
     <a href="/login" class="w3-bar-item w3-button w3-padding-large w3-right w3-hover-white w3-mobile "><i class="fas fa-lock-open w3-margin-right"></i>Login</a>
     <!--<a href="/signup" class="w3-bar-item w3-button w3-padding-large w3-right w3-hover-white w3-mobile "><i class="fas fa-user-plus w3-margin-right"></i>Signup</a>-->
     {{end}}
+    <a href="/cart" class="w3-bar-item w3-button w3-padding-large w3-right w3-hover-white w3-mobile"><i class="fas fa-shopping-basket w3-margin-right"></i>My Basket</a>
   </div>
 </div>
 {{end}}

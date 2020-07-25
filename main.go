@@ -114,12 +114,12 @@ func main() {
 	r.HandleFunc("/bundle/{id:[0-9]+}/uploadimage", authMW.AllowFunc(bundlesController.ImageUpload)).Methods("POST")
 	r.HandleFunc("/bundles", bundlesController.ViewBundles).Methods("GET")
 
-	r.HandleFunc("/cart", cartController.ViewCart)
+	r.HandleFunc("/cart", cartController.ViewCart).Methods("GET")
+	r.HandleFunc("/cart", cartController.Order).Methods("POST")
 	r.HandleFunc("/cart/add", cartController.AddToCart).Queries("productid", "{id:[0-9]+}")
 	r.HandleFunc("/cart/delete", cartController.DeleteItem)
 	r.HandleFunc("/cart/empty", cartController.Empty)
-	r.HandleFunc("/cart/order", cartController.Order).Methods("GET")
-	r.HandleFunc("/cart/order", cartController.ConfirmOrder).Methods("POST")
+
 	log.Printf("Server listening on port: %d", cfg.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfmw(userMW.Allow(cartMW.CheckCart((r))))))
 

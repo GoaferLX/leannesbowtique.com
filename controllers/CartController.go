@@ -63,8 +63,7 @@ func (cc *CartController) AddToCart(w http.ResponseWriter, r *http.Request) {
 
 	alert.PersistAlert(w)
 	cc.CartService.AssignCookie(w, cart)
-	url := fmt.Sprintf("/product/%d", form.ProductID)
-	http.Redirect(w, r, url, http.StatusFound)
+	http.Redirect(w, r, "/products", http.StatusFound)
 	return
 }
 
@@ -104,34 +103,34 @@ func (cc *CartController) Empty(w http.ResponseWriter, r *http.Request) {
 
 func (cc *CartController) Order(w http.ResponseWriter, r *http.Request) {
 	cart := CartFromContext(r)
-	cc.OrderView.RenderTemplate(w, r, cart)
-
-}
-func (cc *CartController) ConfirmOrder(w http.ResponseWriter, r *http.Request) {
-	cart := CartFromContext(r)
 
 	var form orderForm
 	var yield views.Page
 	if err := parsePostForm(r, &form); err != nil {
 		yield.SetAlert(err)
-		cc.OrderView.RenderTemplate(w, r, yield)
+		cc.CartView.RenderTemplate(w, r, yield)
+		return
+	}
+	if err := cc.CartService.PlaceOrder(cart, form.Email); err != nil {
+		yield.SetAlert(fmt.Errorf("Something went wrong: %w", err))
+		cc.CartView.RenderTemplate(w, r, yield)
 		return
 	}
 
 	if err := cc.MailService.Order(form.Email, cart); err != nil {
 		yield.SetAlert(err)
-		cc.OrderView.RenderTemplate(w, r, yield)
+		cc.CartView.RenderTemplate(w, r, yield)
 		return
 	}
-	if err := cc.CartService.Order(cart); err != nil {
-		yield.SetAlert(fmt.Errorf("Something went wrong: %w, please try again", err))
-		cc.OrderView.RenderTemplate(w, r, yield)
+
+	if err := cc.MailService.OrderConfirm(form.Email, cart); err != nil {
+		yield.SetAlert(err)
+		cc.CartView.RenderTemplate(w, r, yield)
 		return
 	}
 
 	alert := &views.Alert{Level: "Success", Message: "Order Placed: Please expect an email from us to confirm"}
 	alert.PersistAlert(w)
 	http.Redirect(w, r, "/products", http.StatusFound)
-	cc.OrderView.RenderTemplate(w, r, yield)
 
 }

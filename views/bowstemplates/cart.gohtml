@@ -24,7 +24,7 @@
 {{end}}
 
 {{define "removeitem"}}
-<form name="cart" method="GET" action="/cart/delete">
+<form style="display:inline;" name="cart" method="GET" action="/cart/delete">
     <button name="productid" id="productid" class="w3-button" type="submit" value="{{.ProductID}}">&times;</button>
 </form>
 {{end}}

@@ -1,42 +1,43 @@
 {{define "content"}}
-<section class="w3-section">
 
-<div>
-  <table>
-    <caption>Your Cart: {{.ID}}</caption>
-
-    {{if .Items}}
-    <tr>
-      <th>PID</th><th>Item</th><th>Price</th><th>Quantity</th>
-    </tr>
-    {{range .Items}}
-    <tr>
-      <td>{{.ProductID}}<td>{{.Product.Name}}</td><td>{{printf "%.2f" .Product.Price}}</td><td>{{.Quantity}}</td><td>{{template "removeitem" .}}</td>
-    </tr>
-    {{end}}
-
-    <tr><td>Subtotal: £{{printf "%.2f" .Subtotal}}</td></tr>
-    <tr><td>Delivery: £{{printf "%.2f" .DeliveryCharge}}</td></tr>
-    <tr><td>Total: £{{printf "%.2f" .Total}}</td></tr>
-    {{else}}
-    <tr><td>Your cart is empty</td></tr>
-    {{end}}
-  </table>
-  <form name="cart" class="w3-panel" method="POST" action="/cart/order">
-    {{csrfField}}
-    <input name="order" id="order" class="w3-button w3-theme-action" type="submit" value="Order Now" />
-  </form>
-  <form name="cart" class="w3-panel" method="POST" action="/cart/empty">
-    {{csrfField}}
-    <input name="empty" id="empty" class="w3-button w3-theme-action" type="submit" value="Empty" />
-  </form>
-</div>
-
+<section class="w3-section w3-white w3-card-4 w3-round">
+  <header class="w3-container w3-theme w3-round">
+    <h3>Your Basket</h3>
+  </header>
+  <div class="w3-container">
+    <p>Below is your shopping basket!</p>
+    <p>You can remove items or adjust quantities from here.</p>
+    <p>All that's left is for you to review your order and hit "Order Now".
+      No payment up front, all we need is your email address so we can get in touch!</p>
+    <table class="w3-table-all">
+      <caption class="w3-text-theme"><b>Your Cart</b></caption>
+      {{if .Items}}
+      <tr>
+        <th class="w3-text-theme">Item</th><th class="w3-text-theme">Price</th><th class="w3-text-theme">Quantity</th>
+      </tr>
+      {{range .Items}}
+      <tr>
+        <td>{{.Product.Name}}</td><td>{{printf "%.2f" .Product.Price}}</td><td>{{.Quantity}}
+        {{template "removeitem" .}}</td>
+      </tr>
+      {{end}}
+      <tr><td colspan="3"></td></tr>
+      <tr><td colspan="2" class="w3-right-align w3-text-theme"><b>Subtotal:</b> </td><td>£{{printf "%.2f" .Subtotal}}</td></tr>
+      <tr><td colspan="2" class="w3-right-align w3-text-theme"><b>Delivery:</b> </td><td>£{{printf "%.2f" .DeliveryCharge}}</td></tr>
+      <tr><td colspan="2" class="w3-right-align w3-text-theme"><b>Total:</b> </td><td><b>£{{printf "%.2f" .Total}}</b></td></tr>
+      {{else}}
+      <tr><td>Your cart is empty</td></tr>
+      {{end}}
+    </table>
+    <form name="orderform" class="w3-panel" method="POST" action="cart">
+      {{csrfField}}
+      <label for="email" class="w3-text-theme"><b>Email:</b></label>
+      <input name="email" id="email" class="w3-input" type="email" value="" placeholder="Your email address..." />
+      <input class="w3-button w3-theme-action" type="submit" value="Order Now!" />
+    </form>
+    <p>Your email address will not be stored by us.</p>
+    <p>We will be in touch to confirm delivery information and give an ETA on your order.</p>
+  </div>
 </section>
-{{end}}
 
-{{define "removeitem"}}
-<form name="cart" method="GET" action="/cart/delete">
-    <button name="productid" id="productid" class="w3-button" type="submit" value="{{.ProductID}}">&times;</button>
-</form>
 {{end}}
