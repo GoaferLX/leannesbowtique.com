@@ -14,6 +14,7 @@ type Config struct {
 	HMACKey  string        `json:"hmacKey"`  // For hashing rememberTokens
 	Database dbConfig      `json:"database"` // Database information
 	Mailgun  mailgunConfig `json:"mailgun"`  // Mailgun config
+	Paypal   paypalConfig  `json:"paypal"`   // Paypal integration config
 }
 
 // Config values by default if user does not provide a config file
@@ -37,7 +38,7 @@ func LoadConfig(configRequired bool) Config {
 		if configRequired {
 			log.Fatal("Config file must be provided in production environment!")
 		}
-		log.Println(err)
+		log.Printf("Could not open config file: %w", err)
 		fmt.Println("Using default config...")
 		return defaultConfig()
 	}
@@ -45,7 +46,7 @@ func LoadConfig(configRequired bool) Config {
 	var cfg Config
 	err = dec.Decode(&cfg)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not parse config file: %w", err)
 	}
 	file.Close()
 	fmt.Println("Using specified config")
@@ -61,6 +62,11 @@ type mailgunConfig struct {
 	Domain       string `json:"domain"`
 	APIKey       string `json:"api_key"`
 	PublicAPIKey string `json:"public_api_key"`
+}
+
+type paypalConfig struct {
+	ClientID string `json:"client_id"`
+	Secret   string `json:"secret"`
 }
 
 // Database configuration

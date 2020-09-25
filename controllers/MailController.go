@@ -49,6 +49,12 @@ func (mc *MailController) Contact(w http.ResponseWriter, r *http.Request) {
 		mc.ContactView.RenderTemplate(w, r, yield)
 		return
 	}
+	filterRegex := regexp.MustCompile(`@leannesbowtique.com`)
+	if filterRegex.MatchString(form.Email) {
+		log.Print("Tried sending email from own domain")
+		mc.ContactView.RenderTemplate(w, r, yield)
+		return
+	}
 
 	msg := mc.mg.NewMessage(form.Email, form.Subject, form.Message, "leanne@leannesbowtique.com")
 	msg.AddBCC("support@leannesbowtique.com")
