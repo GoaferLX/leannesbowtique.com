@@ -56,7 +56,7 @@ func (mc *MailController) Contact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	msg := mc.mg.NewMessage(form.Email, form.Subject, form.Message, "leanne@leannesbowtique.com")
+	msg := mc.mg.NewMessage(form.Email, fmt.Sprint("LB Enquiry: "+form.Subject), form.Message, "leanne@leannesbowtique.com")
 	msg.AddBCC("support@leannesbowtique.com")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
