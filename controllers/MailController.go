@@ -80,7 +80,7 @@ const (
 )
 const resetTextTmpl = `Hi there!
 
-It appears that you have requested a password reset. If this was you, please follow the link below to update your password:<br/>
+It appears that you have requested a password reset. If this was you, please follow the link below to update your password:
 
 %s
 
@@ -88,10 +88,11 @@ If you are asked for a token, please use the following value:
 
 %s
 
-If you didn't request a password reset you can safely ignore this email and your account will not be changed.<br/>
+If you didn't request a password reset you can safely ignore this email and your account will not be changed.
 
 All the best,
 Leanne @ Leanne's Bowtique`
+
 const resetHTMLTmpl = `Hi there!<br/>
 <br/>
 It appears that you have requested a password reset. If this was you, please follow the link below to update your password:<br/>
@@ -110,7 +111,7 @@ Leanne @ Leanne's Bowtique`
 func (mc *MailController) ResetPw(toEmail, token string) error {
 	v := url.Values{}
 	v.Set("token", token)
-	resetURL := "localhost:3000/reset" + "?" + v.Encode()
+	resetURL := "https://leannesbowtique.com/reset?" + v.Encode()
 	resetText := fmt.Sprintf(resetTextTmpl, resetURL, token)
 
 	message := mc.mg.NewMessage("Leanne <support@leannesbowtique.com>", resetPWSubject, resetText, toEmail)
