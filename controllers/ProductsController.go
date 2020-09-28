@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"net/http"
 	"strconv"
@@ -358,31 +359,29 @@ func (pc *ProductsController) ImageUpload(w http.ResponseWriter, r *http.Request
 func (pc *ProductsController) DeleteImage(w http.ResponseWriter, r *http.Request) {
 	yield := views.Page{}
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		yield.SetAlert(err)
-		pc.editView.RenderTemplate(w, r, yield)
-	}
 
-	product, err := pc.productService.GetByID(id)
-	if err != nil {
-		yield.SetAlert(err)
-		pc.editView.RenderTemplate(w, r, yield)
-		return
-	}
-	yield.PageData = product
+	data := struct {
+		Categories []models.Category
+		Product    *models.Product
+	}{}
+	yield.PageData = &data
+
+	data.Categories, _ = pc.productService.GetCategories()
+	product := pc.productByID(w, r)
+	data.Product = product
 
 	filename := vars["filename"]
 	// Build the Image model
+
 	i := models.Image{
 		Filename: filename,
+		Filepath: fmt.Sprintf("images/products/%d", product.ID),
 		EntityID: product.ID,
 	}
 	// Try to delete the image.
-	err = pc.imageService.Delete(&i)
-	if err != nil {
+	if err := pc.imageService.Delete(&i); err != nil {
 		// Render the edit page with any errors.
-		yield.PageData = product
+		log.Print(err)
 		yield.SetAlert(err)
 		pc.editView.RenderTemplate(w, r, yield)
 		return
