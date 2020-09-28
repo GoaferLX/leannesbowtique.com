@@ -119,7 +119,7 @@ func (uv *userValidator) CreateUser(user *User) error {
 	if err := Validate(user.Email, isRequired, isEmailFormat); err != nil {
 		return err
 	}
-	if err := Validate(user.Password, isRequired, isMinLength(4)); err != nil {
+	if err := Validate(user.Password, isRequired, isMinLength(8)); err != nil {
 		return err
 	}
 	pwhash, err := bcrypt.GenerateFromPassword([]byte(user.Password+uv.PwPepper), bcrypt.DefaultCost)
@@ -148,6 +148,10 @@ func (dbm *userDB) CreateUser(user *User) error {
 }
 func (uv *userValidator) UpdateUser(user *User) error {
 	user.RememberHash = uv.hmac.Hash(user.RememberToken)
+	if err := Validate(user.Password, isMinLength(8)); err != nil {
+		return err
+	}
+
 	if user.Password != "" {
 		pwhash, err := bcrypt.GenerateFromPassword([]byte(user.Password+uv.PwPepper), bcrypt.DefaultCost)
 		if err != nil {
@@ -228,6 +232,9 @@ func (um *userModel) CompletePWReset(token, newPw string) (*User, error) {
 		return nil, err
 	}
 	user.Password = newPw
+	if err := Validate(user.Password, isRequired, isMinLength(8)); err != nil {
+		return nil, err
+	}
 	if err = um.UpdateUser(user); err != nil {
 		return nil, err
 	}

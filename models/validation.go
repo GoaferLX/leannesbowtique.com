@@ -72,6 +72,9 @@ func isEmailFormat(input interface{}) error {
 func isMinLength(minLength int) valFunc {
 	return valFunc(func(input interface{}) error {
 		data := input.(string)
+		if data == "" {
+			return nil
+		}
 		if len(data) < minLength {
 			return fmt.Errorf("Not long enough, must be %d characters\n", minLength)
 		}
